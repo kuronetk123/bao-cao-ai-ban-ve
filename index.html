@@ -1,0 +1,755 @@
+<!doctype html><html lang="vi"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><title>Báo cáo AI bản vẽ</title>
+<meta name="description" content="Báo cáo ứng dụng AI trong đọc và kiểm tra bản vẽ CAD, PDF. Kiểm chứng trên hồ sơ kiến trúc tầng 1.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Bố cục: trang báo cáo cuộn dọc kiểu tài liệu doanh nghiệp. Cột trái là số mục, cột phải là nội dung. Màu trung tính, một màu nhấn xanh than, màu vàng đất cho điểm cần xem. */
+:root{
+ --bg:#F6F5F2;--surface:#FFFFFF;--ink:#15191F;--ink-2:#3A4250;--muted:#68707D;--line:#E1DFD9;--line-2:#ECEAE5;
+ --accent:#1F3A5F;--accent-soft:#E9EEF5;--flag:#94570F;--flag-soft:#F5EDDF;--ok:#2B6A4D;--ok-soft:#E4EFE8;
+ --code:#1B1F26;
+ --f:'Be Vietnam Pro',system-ui,sans-serif;--m:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+ --bg:#0F1216;--surface:#161A20;--ink:#E7E9EC;--ink-2:#C2C7CF;--muted:#9099A6;--line:#2A2F37;--line-2:#22272E;
+ --accent:#93B2DA;--accent-soft:#1A2433;--flag:#E2A65C;--flag-soft:#2C2317;--ok:#7DC3A1;--ok-soft:#15261E;--code:#0B0D10;color-scheme:dark}}
+:root[data-theme="dark"]{
+ --bg:#0F1216;--surface:#161A20;--ink:#E7E9EC;--ink-2:#C2C7CF;--muted:#9099A6;--line:#2A2F37;--line-2:#22272E;
+ --accent:#93B2DA;--accent-soft:#1A2433;--flag:#E2A65C;--flag-soft:#2C2317;--ok:#7DC3A1;--ok-soft:#15261E;--code:#0B0D10;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--f);-webkit-font-smoothing:antialiased;font-feature-settings:"tnum" 0}
+h1,h2,h3,h4{margin:0;line-height:1.25;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:16px;top:-60px;z-index:60;background:var(--accent);color:#fff;padding:10px 14px;border-radius:6px;text-decoration:none}
+.skip:focus{top:10px}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--m)}
+
+/* Header */
+.hd{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--line)}
+.hd .w{display:flex;align-items:center;gap:24px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:600;white-space:nowrap}
+.brand i{width:26px;height:26px;border-radius:5px;background:var(--accent);display:grid;place-items:center;color:var(--bg)}
+.brand i .ic{width:15px;height:15px}
+.brand span{font-size:.95rem}
+.nav{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;padding:10px 12px;min-height:44px;display:inline-flex;align-items:center;gap:6px;border-radius:6px;white-space:nowrap}
+.nav a small{font:500 .72rem var(--m);color:var(--muted)}
+.nav a:hover{color:var(--ink);background:var(--line-2)}
+.nav a[aria-current="true"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--accent);border-radius:0}
+@media (max-width:820px){.nav a span{display:none}.brand span{display:none}}
+
+.w{width:100%;max-width:1160px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px)) 0 max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:700px){.w{padding:0 32px}}
+
+/* Hero */
+.hero{padding:72px 0 56px;border-bottom:1px solid var(--line)}
+.kick{font:500 .76rem/1 var(--m);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:600;max-width:24ch;margin-top:16px;letter-spacing:-.02em}
+.lede{font-size:clamp(1.05rem,1.4vw,1.2rem);color:var(--ink-2);max-width:62ch;margin-top:20px}
+.meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:28px;font-size:.88rem;color:var(--muted)}
+.meta b{display:block;color:var(--ink);font-weight:600;font-size:.92rem}
+.kf{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;background:var(--surface);margin-top:44px}
+.kf>div{padding:22px 22px 20px;border-left:1px solid var(--line)}
+.kf>div:first-child{border-left:0}
+.kf .v{font-size:clamp(1.8rem,3vw,2.4rem);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+.kf .v small{font-size:.5em;font-weight:500;color:var(--muted);margin-left:4px}
+.kf p{font-size:.88rem;color:var(--muted);margin-top:6px}
+.kf .fl .v{color:var(--flag)}
+@media (max-width:820px){.kf{grid-template-columns:repeat(2,minmax(0,1fr))}.kf>div:nth-child(3){border-left:0}.kf>div:nth-child(n+3){border-top:1px solid var(--line)}}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:40px}
+.summary div{border-top:2px solid var(--ink);padding-top:14px}
+.summary h3{font-size:1rem}
+.summary p{font-size:.93rem;color:var(--ink-2);margin-top:6px}
+@media (max-width:820px){.summary{grid-template-columns:1fr;gap:20px}}
+
+/* Sections */
+.sec{padding:72px 0;border-bottom:1px solid var(--line)}
+.sec>.w{display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
+@media (max-width:960px){.sec>.w{grid-template-columns:1fr;gap:20px}.sec{padding:52px 0}}
+.side{position:sticky;top:96px;align-self:start}
+@media (max-width:960px){.side{position:static}}
+.side .n{font:500 .8rem var(--m);color:var(--muted);letter-spacing:.08em}
+.side h2{font-size:1.45rem;margin-top:8px}
+.side p{font-size:.88rem;color:var(--muted);margin-top:10px}
+.body{display:flex;flex-direction:column;gap:40px;min-width:0}
+.sub h3{font-size:1.15rem}
+.sub>p.d{color:var(--ink-2);margin-top:8px;max-width:70ch}
+.sub>*+*{margin-top:18px}
+.sub .h{display:flex;align-items:baseline;gap:12px}
+.sub .h span{font:500 .78rem var(--m);color:var(--muted)}
+.note{font-size:.82rem;color:var(--muted)}
+
+/* Stats, tables */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.stats>div{padding:20px;border-left:1px solid var(--line)}
+.stats>div:first-child{border-left:0}
+.stats .v{font-size:2rem;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stats p{font-size:.9rem;color:var(--ink-2)}
+@media (max-width:700px){.stats{grid-template-columns:1fr}.stats>div{border-left:0;border-top:1px solid var(--line)}.stats>div:first-child{border-top:0}}
+.tw{border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:auto;max-width:100%}
+.tw.scroll{max-height:440px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-2);vertical-align:top}
+th{font:500 .74rem var(--m);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:var(--surface);position:sticky;top:0;z-index:1;border-bottom:1px solid var(--line)}
+.tw table{min-width:620px}
+.tw.narrow table{min-width:0}
+#ais td.t{min-width:240px;width:38%}
+tbody tr:last-child td{border-bottom:0}
+td.r,th.r{text-align:right}
+td.c,th.c{text-align:center}
+td.k{font-family:var(--m);font-weight:500;white-space:nowrap}
+td.t{color:var(--ink-2)}
+tr.flag td{background:var(--flag-soft)}
+.tag{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:500;padding:2px 8px;border-radius:4px;white-space:nowrap}
+.tag.ai{background:var(--accent-soft);color:var(--accent)}
+.tag.kts{background:var(--flag-soft);color:var(--flag)}
+.tag.both{background:var(--ok-soft);color:var(--ok)}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.fl{background:var(--flag-soft);color:var(--flag)}
+.tag .ic{width:14px;height:14px}
+.yes{color:var(--ok)} .no{color:var(--muted)}
+tr.rec td{background:var(--accent-soft)}
+tr.rec td:first-child{box-shadow:inset 3px 0 0 var(--accent)}
+
+/* Lists */
+.reasons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.reasons div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px}
+.reasons .ic{width:22px;height:22px;color:var(--accent)}
+.reasons h4{font-size:1rem;margin-top:12px}
+.reasons p{font-size:.9rem;color:var(--ink-2);margin-top:6px}
+@media (max-width:820px){.reasons{grid-template-columns:1fr}}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.steps li{padding:20px;border-left:1px solid var(--line);border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.steps li:nth-child(3n+1){border-left:0}
+.steps li:nth-child(-n+3){border-top:0}
+.steps .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.steps .sn{font:500 .8rem var(--m);color:var(--muted)}
+.steps h4{font-size:1rem}
+.steps p{font-size:.9rem;color:var(--ink-2)}
+.steps .ex{font-size:.84rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;margin-top:auto}
+@media (max-width:820px){.steps{grid-template-columns:1fr}.steps li{border-left:0!important;border-top:1px solid var(--line)!important}.steps li:first-child{border-top:0!important}}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:0 6px 6px 0;font-size:.95rem;color:var(--ink)}
+.callout.fl{border-color:var(--flag);background:var(--flag-soft)}
+
+/* Diagram */
+.diag{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:0}
+.diag .bx{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.diag .bx.main{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.diag .bx .ic{width:22px;height:22px;color:var(--accent)}
+.diag .bx h4{font-size:.98rem;margin-top:6px}
+.diag .bx p{font-size:.86rem;color:var(--muted)}
+.diag .ar{display:grid;place-items:center;padding:0 10px;color:var(--muted)}
+@media (max-width:760px){.diag{grid-template-columns:1fr}.diag .ar{padding:6px 0;transform:rotate(90deg)}}
+
+/* Tabs, code */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:12px 16px;min-height:44px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.olist{list-style:none;margin:0;padding:0;counter-reset:s}
+.olist li{counter-increment:s;display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+.olist li:last-child{border-bottom:0}
+.olist li::before{content:counter(s);width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font:500 .78rem var(--m);color:var(--muted);margin-top:1px}
+.olist b{font-weight:600}
+.olist p{font-size:.9rem;color:var(--ink-2)}
+.code{display:flex;gap:10px;align-items:flex-start;background:var(--code);border-radius:6px;padding:10px 10px 10px 14px;margin-top:8px;min-width:0}
+.code pre{margin:0;flex:1;min-width:0;overflow-x:auto;font:400 .8rem/1.6 var(--m);color:#DCE1E8;white-space:pre;padding-top:5px}
+.copy{background:#2A3039;border:1px solid #3A414C;color:#DCE1E8;font:500 .75rem var(--m);padding:6px 10px;min-height:36px;min-width:76px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none}
+.copy:hover{background:#333A45}
+.copy.done{background:#2B6A4D;border-color:#2B6A4D;color:#fff}
+.copy .ic{width:14px;height:14px}
+.cp{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:5px;min-width:40px;min-height:36px;display:grid;place-items:center}
+.cp:hover{color:var(--accent);border-color:var(--accent)}
+.cp.done{color:var(--ok);border-color:var(--ok)}
+
+/* Filters */
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:none;padding:8px 14px;min-height:40px;font-size:.86rem;font-weight:500;color:var(--ink-2);border-left:1px solid var(--line)}
+.seg button:first-child{border-left:0}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.srch{display:flex;align-items:center;gap:8px}
+.srch label{font-size:.84rem;color:var(--muted)}
+.srch input{font:inherit;font-size:16px;min-height:40px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);width:150px}
+.lnk{border:0;background:none;color:var(--accent);font-weight:500;font-size:.9rem;display:inline-flex;align-items:center;gap:6px;padding:8px 0;min-height:40px}
+.lnk:hover{text-decoration:underline}
+
+/* Figures */
+figure{margin:0}
+.fig{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px}
+.fig .pic{position:relative;background:#fff;border-radius:4px;overflow:hidden}
+.fig img{display:block;width:100%;height:auto}
+figcaption{font-size:.84rem;color:var(--muted);padding:10px 4px 2px}
+figcaption b{color:var(--ink);font-weight:600}
+.zoomable{cursor:zoom-in;border:0;padding:0;background:none;display:block;width:100%}
+.mk{position:absolute;width:28px;height:28px;margin:-14px 0 0 -14px;border-radius:50%;border:2px solid #fff;font:600 .78rem var(--m);display:grid;place-items:center;color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.35);padding:0}
+.mk.ok{background:#1F3A5F} .mk.fl{background:#94570F}
+.mk[aria-pressed="true"]{outline:3px solid #fff;outline-offset:1px;box-shadow:0 0 0 6px rgba(31,58,95,.35)}
+.planwrap{display:flex;flex-direction:column;gap:16px}
+.notes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.notes li{border-bottom:0;border-top:1px solid var(--line-2)}
+.notes li:nth-child(-n+2){border-top:0}
+.notes li:nth-child(even){border-left:1px solid var(--line-2)}
+@media (max-width:700px){.notes{grid-template-columns:1fr}.notes li:nth-child(2){border-top:1px solid var(--line-2)}.notes li:nth-child(even){border-left:0}}
+.notes{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.notes li{border-bottom:1px solid var(--line-2)}
+.notes li:last-child{border-bottom:0}
+.notes button{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;text-align:left;border:0;background:none;padding:12px 14px;width:100%;min-height:44px}
+.notes button:hover,.notes button[aria-pressed="true"]{background:var(--line-2)}
+.notes .b{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:600 .74rem var(--m);color:#fff}
+.notes .b.ok{background:#1F3A5F}.notes .b.fl{background:#94570F}
+.notes b{font-size:.9rem;font-weight:600;display:block}
+.notes span.t{font-size:.84rem;color:var(--ink-2)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media (max-width:760px){.two{grid-template-columns:1fr}}
+.rm{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px;align-items:start}
+@media (max-width:960px){.rm{grid-template-columns:1fr}}
+.rm .fig img{max-height:560px;object-fit:contain}
+.notes li{list-style:none}
+.bar{display:block;height:6px;border-radius:3px;background:var(--accent);opacity:.55;margin-top:4px}
+
+/* FAQ */
+.faq{border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.faq details{border-bottom:1px solid var(--line-2)}
+.faq details:last-child{border-bottom:0}
+.faq summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:16px;font-weight:600;min-height:44px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .ic{transition:transform .2s;color:var(--muted)}
+.faq details[open] summary .ic{transform:rotate(45deg)}
+.faq .a{padding:0 18px 18px;color:var(--ink-2);max-width:72ch;white-space:pre-line}
+.faq .src{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.faq .src span{font:500 .74rem var(--m);color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:2px 8px}
+
+.recs{list-style:none;margin:0;padding:0;counter-reset:r;display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.recs li{counter-increment:r;display:grid;grid-template-columns:48px minmax(0,1fr);gap:12px;padding:18px 0;border-bottom:1px solid var(--line)}
+.recs li::before{content:counter(r,decimal-leading-zero);font:500 .9rem var(--m);color:var(--muted)}
+.recs b{display:block;font-weight:600}
+.recs p{color:var(--ink-2);font-size:.94rem;margin-top:4px}
+
+.ft{padding:40px 0 56px;color:var(--muted);font-size:.84rem}
+.ft .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* Lightbox */
+.lb[hidden]{display:none}
+.lb{position:fixed;inset:0;z-index:50;background:rgba(10,12,16,.88);display:grid;place-items:center;padding:16px}
+.lb figure{max-width:1200px;width:100%;display:flex;flex-direction:column;gap:10px}
+.lb img{max-width:100%;max-height:80vh;object-fit:contain;background:#fff;border-radius:4px;margin:0 auto}
+.lb figcaption{color:#D5DAE1;text-align:center}
+.lb .x{position:absolute;top:14px;right:14px;background:#2A3039;border:1px solid #3A414C;color:#fff;border-radius:6px;padding:8px 14px;min-height:44px;display:inline-flex;align-items:center;gap:6px}
+
+/* Hướng dẫn dùng nhanh */
+.gp{display:flex;flex-direction:column;gap:0;margin-top:4px}
+.gp[hidden]{display:none}
+@media (min-width:821px){.nav a{padding:10px 9px}}
+.gp>p.d{color:var(--ink-2);padding:18px 0 4px;max-width:70ch}
+.gstep{padding:22px 0;border-bottom:1px solid var(--line-2)}
+.gstep:last-child{border-bottom:0;padding-bottom:0}
+.gh{display:flex;align-items:baseline;gap:12px;font-weight:600;font-size:1.02rem;margin-bottom:14px;flex-wrap:wrap}
+.gh span{font:500 .74rem var(--m);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:4px}
+.gh em{font-style:normal;font-weight:400;font-size:.86rem;color:var(--muted)}
+.gprep{font-size:.92rem;color:var(--ink-2);margin-bottom:16px;max-width:75ch}
+.gprep b{color:var(--ink)}
+.gcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.gcols>div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px}
+.gcols h4{font-size:.94rem;margin-bottom:8px}
+.glist{margin:0;padding-left:20px;font-size:.9rem;color:var(--ink-2);display:flex;flex-direction:column;gap:5px}
+.glist b{color:var(--ink);font-weight:600}
+.gp code,.sub code{font:500 .84rem var(--m);background:var(--line-2);color:var(--ink);padding:1px 6px;border-radius:4px;white-space:nowrap}
+.gthree{list-style:none;margin:0 0 16px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;background:var(--surface);counter-reset:g}
+.gthree li{counter-increment:g;padding:16px 18px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:4px}
+.gthree li:first-child{border-left:0}
+.gthree li::before{content:counter(g);font:600 1.3rem/1 var(--f);color:var(--accent);margin-bottom:6px}
+.gthree b{font-weight:600}
+.gthree span{font-size:.88rem;color:var(--ink-2)}
+@media (max-width:700px){.gthree{grid-template-columns:1fr}.gthree li{border-left:0;border-top:1px solid var(--line)}.gthree li:first-child{border-top:0}}
+.gnote{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:.92rem;color:var(--ink-2)}
+.gnote b{color:var(--ink)}
+.gnote.boxed{background:var(--flag-soft);border-radius:8px;padding:16px 16px 16px 34px}
+.code.long pre{white-space:pre-wrap;overflow-wrap:anywhere;max-height:420px;overflow-y:auto;padding-right:6px}
+.hero .go{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-weight:500;color:var(--accent);text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:10px 14px;min-height:44px}
+.hero .go:hover{border-color:var(--accent)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head><body>
+<a class="skip" href="#main">Bỏ qua, tới nội dung</a>
+<header class="hd"><div class="w">
+ <a class="brand" href="#top"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></i><span>Báo cáo · AI đọc bản vẽ</span></a>
+ <nav class="nav" aria-label="Mục lục">
+  <a href="#s1"><small>01</small><span>Bối cảnh</span></a><a href="#s2"><small>02</small><span>Lựa chọn AI</span></a><a href="#s3"><small>03</small><span>Quy trình kiểm tra</span></a><a href="#s4"><small>04</small><span>Cài đặt, sử dụng</span></a><a href="#s5"><small>05</small><span>Kiểm chứng tầng 1</span></a>
+ </nav>
+</div></header>
+
+<main id="main">
+<section class="hero" id="top"><div class="w">
+ <p class="kick">Báo cáo · 23/11/2026</p>
+ <h1>Ứng dụng AI trong đọc và kiểm tra bản vẽ CAD, PDF</h1>
+ <p class="lede">Báo cáo trình bày AI làm được gì với hồ sơ bản vẽ, nên dùng công cụ nào, quy trình kiểm tra đề xuất và cách cài đặt. Phần cuối kiểm chứng trên hồ sơ kiến trúc thật: tầng 1 của một công trình 5 tầng.</p>
+ <a class="go" href="#mo-dau"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Hướng dẫn dùng nhanh: thiết lập một lần, sau đó chỉ cần thả file và gõ từ khóa</a>
+ <div class="meta"><div><b>Phạm vi kiểm chứng</b>Tầng 1, hồ sơ PDF 174 trang</div><div><b>Dữ liệu dùng</b>Trang 2, 9, 19, 21–25</div><div><b>Công cụ</b>Claude Desktop, AutoCAD MCP</div></div>
+ <div class="kf">
+  <div><p class="v">62</p><p>phòng có ghi diện tích, cộng 1.013 m²</p></div>
+  <div><p class="v">3/3</p><p>chuỗi kích thước trục cộng đúng kích thước tổng</p></div>
+  <div><p class="v">51/55</p><p>mã cửa khớp số lượng giữa bảng thống kê và mặt bằng</p></div>
+  <div class="fl"><p class="v">4</p><p>điểm chênh lệch được đánh dấu cho kỹ sư xem</p></div>
+ </div>
+ <div class="summary">
+  <div><h3>AI đọc được hồ sơ bản vẽ</h3><p>Từ một file PDF dày, AI tự tìm đúng trang, đọc tên phòng, diện tích, ký hiệu cửa, bảng thống kê và chuỗi kích thước.</p></div>
+  <div><h3>AI đối chiếu chéo, chỉ ra nguồn</h3><p>Mỗi kết quả kèm trang và vị trí trên bản vẽ. Chỗ lệch có ảnh cắt để kỹ sư kiểm lại trong vài giây.</p></div>
+  <div><h3>Kỹ sư vẫn là người kết luận</h3><p>AI không tự kết luận lỗi. Ví dụ ĐV5 lệch số lượng nhưng xem bản vẽ thì không phải lỗi.</p></div>
+ </div>
+</div></section>
+
+<!-- 01 -->
+<section class="sec" id="s1"><div class="w">
+ <div class="side"><p class="n">01</p><h2>Bối cảnh</h2><p>AI trong ngành xây dựng và cách phân công công việc.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>Tiềm năng lớn, mức áp dụng còn thấp</h3>
+   <div class="stats">
+    <div><p class="v">50%</p><p>công việc văn phòng kỹ thuật có thể tự động hoá</p></div>
+    <div><p class="v">27%</p><p>người trong ngành đang dùng AI trong công việc</p></div>
+    <div><p class="v">32%</p><p>lãnh đạo cho biết đã gần đạt mục tiêu AI</p></div>
+   </div>
+   <p class="note">Năng suất xây dựng 2000–2022 tăng 10%, sản xuất tăng 90%. Nguồn: McKinsey (07/2026), ASCE / Bluebeam (12/2025), Autodesk 2026 AI Construction Trends.</p>
+  </div>
+  <div class="sub">
+   <h3>Phân công giữa AI và kỹ sư khi làm việc với hồ sơ bản vẽ</h3>
+   <div class="tw"><table><thead><tr><th>Công việc</th><th>Phụ trách</th><th>Ví dụ ở tầng 1</th></tr></thead><tbody id="roles"></tbody></table></div>
+  </div>
+ </div>
+</div></section>
+
+<!-- 02 -->
+<section class="sec" id="s2"><div class="w">
+ <div class="side"><p class="n">02</p><h2>Lựa chọn AI</h2><p>So sánh năm công cụ theo nhu cầu đọc bản vẽ.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>So sánh theo ba tiêu chí</h3>
+   <div class="tw"><table><thead><tr><th>Công cụ</th><th class="c">Đọc PDF</th><th class="c">Nối CAD trên máy</th><th class="c">Viết lệnh</th><th class="r">Điểm code</th><th>Nhận xét</th></tr></thead><tbody id="ais"></tbody></table></div>
+   <p class="note">Điểm viết code: SWE-bench Verified 02/2026, đo khả năng viết và sửa phần mềm, không đo trực tiếp việc đọc bản vẽ.</p>
+  </div>
+  <div class="sub">
+   <h3>Khuyến nghị: Claude làm công cụ chính</h3>
+   <div class="reasons">
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg><h4>Đọc PDF bản vẽ khổ lớn</h4><p>Đọc cả chữ và hình: tên phòng, diện tích, ký hiệu, bảng thống kê.</p></div>
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/></svg><h4>Nối AutoCAD qua MCP</h4><p>Đọc layer, block, text và kích thước ngay trong file DWG đang mở.</p></div>
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l6-6-6-6M12 19h8"/></svg><h4>Tự viết lệnh xử lý số liệu</h4><p>Bóc bảng, đếm ký hiệu, cộng chuỗi kích thước, đối chiếu chéo.</p></div>
+   </div>
+   <p class="note">Có thể dùng kết hợp ChatGPT hoặc Gemini để tra cứu nhanh, Copilot nếu công ty dùng Microsoft 365.</p>
+  </div>
+ </div>
+</div></section>
+
+<!-- 03 -->
+<section class="sec" id="s3"><div class="w">
+ <div class="side"><p class="n">03</p><h2>Quy trình kiểm tra</h2><p>AI đọc và đối chiếu, kỹ sư kết luận.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>Sáu bước đề xuất</h3>
+   <ol class="steps" id="steps"></ol>
+  </div>
+  <div class="sub">
+   <h3>Ba nguyên tắc để kết quả kiểm lại được</h3>
+   <div class="reasons">
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><h4>Luôn chỉ nguồn</h4><p>Mỗi con số kèm trang PDF, mã ký hiệu và vị trí trên bản vẽ.</p></div>
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15"/></svg><h4>Đếm theo hai đường</h4><p>So bảng thống kê với mặt bằng, so tổng các đoạn với kích thước tổng.</p></div>
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/></svg><h4>Không tự kết luận lỗi</h4><p>AI đánh dấu chỗ lệch kèm ảnh cắt. Lỗi hay không do kỹ sư quyết định.</p></div>
+   </div>
+  </div>
+ </div>
+</div></section>
+
+<!-- 04 -->
+<section class="sec" id="s4"><div class="w">
+ <div class="side"><p class="n">04</p><h2>Cài đặt và sử dụng</h2><p>PDF dùng ngay. CAD cần nối AutoCAD qua MCP. Thiết lập một lần, sau đó chỉ cần thả file và gõ từ khóa.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>Cách hoạt động</h3>
+   <div class="diag">
+    <div class="bx"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg><h4>File PDF</h4><p>Kéo vào khung chat, hỏi bằng tiếng Việt.</p></div>
+    <div class="ar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="bx main"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><h4>Claude Desktop</h4><p>Đọc, đếm, đối chiếu, trả lời kèm nguồn.</p></div>
+    <div class="ar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg></div>
+    <div class="bx"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM3 9h18M9 21V9"/></svg><h4>AutoCAD</h4><p>Đọc layer, block, text, kích thước qua MCP.</p></div>
+   </div>
+   <div class="callout">MCP là chuẩn kết nối giữa AI và phần mềm. AI đọc file đang mở ngay trên máy, không cần tải bản vẽ lên mạng.</div>
+  </div>
+  <div class="sub" id="cai-dat">
+   <h3>Các bước cài đặt</h3>
+   <div class="tabs" role="tablist" id="tabs"></div>
+   <ol class="olist" id="ws"></ol>
+   <p class="note">Windows 10/11, AutoCAD LT 2024 trở lên. MCP chạy bằng quyền tài khoản Windows: chỉ cài từ nguồn tin cậy và sao lưu file trước lần dùng đầu.</p>
+  </div>
+  <div class="sub" id="mo-dau">
+   <div class="h"><h3>Hướng dẫn dùng nhanh</h3><span>Thiết lập một lần, sau đó chỉ thả file và gõ từ khóa</span></div>
+   <p class="d">Ba công cụ dùng chung một lời dặn và một bộ từ khóa. Claude là công cụ chính vì đọc được cả PDF và file CAD đang mở trong AutoCAD.</p>
+   <div class="tabs" role="tablist" id="gtabs" aria-label="Công cụ">
+    <button role="tab" id="gt0" aria-controls="gp0" aria-selected="true">Claude · khuyến nghị</button><button role="tab" id="gt1" aria-controls="gp1" aria-selected="false">ChatGPT</button><button role="tab" id="gt2" aria-controls="gp2" aria-selected="false">Gemini</button>
+   </div>
+
+   <div class="gp" id="gp0" role="tabpanel" aria-labelledby="gt0">
+    <div class="gstep"><p class="gh"><span>Bước 1</span>Thiết lập lần đầu <em>chỉ làm một lần</em></p>
+     <p class="gprep"><b>Chuẩn bị:</b> máy tính, tài khoản Claude, các file mẫu của công ty (mẫu báo cáo kiểm tra hồ sơ, bảng thống kê mẫu, quy ước ký hiệu). Để Claude xuất được file Excel, Word: bấm tên tài khoản ở góc dưới bên trái → Settings → Capabilities, bật <i>Code execution and file creation</i>.</p>
+     <div class="gcols">
+      <div><h4>Tạo dự án</h4><ol class="glist"><li>Vào claude.ai, đăng nhập.</li><li>Cột bên trái, bấm <b>Dự án</b> → <b>+ Dự án mới</b>.</li><li>Đặt tên <b>Kiểm tra hồ sơ bản vẽ</b>, bấm Tạo dự án.</li><li>Bấm biểu tượng ghim để dự án luôn hiện ở cột trái.</li></ol></div>
+      <div><h4>Tải mẫu vào dự án</h4><ol class="glist"><li>Bên phải trang dự án, mục <b>Ngữ cảnh</b>, bấm dấu +.</li><li>Chọn tải tệp lên, chọn các file mẫu.</li></ol></div>
+      <div><h4>Dán lời dặn</h4><ol class="glist"><li>Mục <b>Hướng dẫn</b>, bấm dấu +.</li><li>Copy ô <a href="#loi-dan">Lời dặn</a> bên dưới, dán vào, sửa chỗ [ ], bấm Lưu.</li></ol></div>
+      <div><h4>Với file CAD</h4><ol class="glist"><li>Cài Claude Desktop và AutoCAD MCP theo <a href="#cai-dat">các bước cài đặt</a> ở trên.</li><li>File CAD chỉ đọc được qua Claude Desktop, trên máy có cài AutoCAD.</li></ol></div>
+     </div>
+    </div>
+    <div class="gstep"><p class="gh"><span>Bước 2</span>Dùng thử lần đầu</p>
+     <ol class="glist"><li>Mở dự án vừa tạo, kéo thả file PDF hồ sơ vào khung chat.</li><li>Gõ <code>TÌM TRANG – tầng 1</code> rồi Enter. Claude trả về danh sách trang kèm tên bản vẽ.</li><li>Gõ tiếp <code>ĐỐI CHIẾU – cửa tầng 1</code>. Muốn lấy bảng thì gõ <code>Xuất file Excel</code>.</li></ol>
+    </div>
+    <div class="gstep"><p class="gh"><span>Bước 3</span>Các lần sau, chỉ 3 thao tác</p>
+     <ol class="gthree"><li><b>Mở dự án</b><span>Bấm Kiểm tra hồ sơ bản vẽ ở cột trái.</span></li><li><b>Đưa bản vẽ vào</b><span>Thả file PDF vào khung chat. Với CAD thì mở bản vẽ trong AutoCAD.</span></li><li><b>Gõ 1 từ khóa</b><span>Xem bảng từ khóa bên dưới, rồi Enter.</span></li></ol>
+     <p class="callout">Luôn làm trong dự án. Đoạn chat mở từ trang chủ nằm ngoài dự án, khi đó Claude không biết mẫu và từ khóa.</p>
+    </div>
+   </div>
+
+   <div class="gp" id="gp1" role="tabpanel" aria-labelledby="gt1" hidden>
+    <p class="d">Cách dùng giống Claude: tạo dự án một lần, sau đó mỗi lần chỉ thả file và gõ từ khóa. Lời dặn và từ khóa dùng lại nguyên như phần Claude.</p>
+    <div class="gstep"><p class="gh"><span>Bước 1</span>Thiết lập lần đầu <em>chỉ làm một lần</em></p>
+     <div class="gcols">
+      <div><h4>Tạo dự án</h4><ol class="glist"><li>Vào chatgpt.com, đăng nhập.</li><li>Cột bên trái, bấm <b>New project</b>.</li><li>Đặt tên <b>Kiểm tra hồ sơ bản vẽ</b>, tạo dự án.</li><li>Bấm ••• ở góc trên bên phải → Ghim dự án.</li></ol></div>
+      <div><h4>Tải mẫu vào dự án</h4><ol class="glist"><li>Trong trang dự án, mở tab <b>Nguồn</b> → thêm tệp.</li><li>Chọn các file mẫu, bấm Open.</li></ol></div>
+      <div><h4>Dán lời dặn</h4><ol class="glist"><li>Bấm ••• → <b>Cài đặt dự án</b>.</li><li>Dán ô <a href="#loi-dan">Lời dặn</a> vào ô Hướng dẫn, sửa chỗ [ ], bấm Lưu.</li></ol></div>
+     </div>
+    </div>
+    <div class="gstep"><p class="gh"><span>Bước 2</span>Các lần sau, chỉ 3 thao tác</p>
+     <ol class="gthree"><li><b>Mở dự án</b><span>Bấm tên dự án ở cột trái, gõ vào ô trò chuyện mới của dự án.</span></li><li><b>Thả file PDF</b><span>Hoặc bấm dấu + → chọn file.</span></li><li><b>Gõ 1 từ khóa</b><span>Dùng y như bảng từ khóa bên dưới.</span></li></ol>
+    </div>
+    <div class="gstep"><p class="gh"><span>Lưu ý</span>Riêng khi dùng ChatGPT</p>
+     <ul class="gnote"><li><b>File CAD:</b> ChatGPT chưa nối thẳng với AutoCAD trên máy. Xuất bản vẽ ra PDF (lệnh PLOT, chọn máy in DWG To PDF) rồi làm như file PDF. Việc đếm block, đo theo tọa độ chỉ làm được với Claude và AutoCAD MCP.</li><li><b>Tắt chia sẻ dữ liệu:</b> bấm tên tài khoản → Settings → Data controls, tắt <i>Improve the model for everyone</i>.</li><li>Gõ ở trang chủ bên ngoài dự án thì ChatGPT không biết mẫu và từ khóa.</li></ul>
+    </div>
+   </div>
+
+   <div class="gp" id="gp2" role="tabpanel" aria-labelledby="gt2" hidden>
+    <p class="d">Gemini mạnh với tài liệu rất dài, hợp khi cần đọc cả bộ hồ sơ nhiều trăm trang trong một lần. Trong Gemini, dự án được gọi là Gem.</p>
+    <div class="gstep"><p class="gh"><span>Bước 1</span>Thiết lập lần đầu <em>chỉ làm một lần</em></p>
+     <p class="gprep"><b>Chuẩn bị:</b> máy tính (Gem chỉ tạo được trên máy tính, tạo xong dùng được cả trên điện thoại), tài khoản Google, các file mẫu. Hồ sơ dày nên dùng gói Google AI Pro.</p>
+     <div class="gcols">
+      <div><h4>Tạo Gem</h4><ol class="glist"><li>Vào gemini.google.com, đăng nhập.</li><li>Cột bên trái, bấm <b>Gem</b> → <b>Gem mới</b>.</li><li>Ô Tên: gõ <b>Kiểm tra hồ sơ bản vẽ</b>.</li></ol></div>
+      <div><h4>Tải mẫu vào Gem</h4><ol class="glist"><li>Mục <b>Kiến thức</b>, bấm dấu + / Thêm tệp.</li><li>Chọn các file mẫu.</li></ol></div>
+      <div><h4>Dán lời dặn</h4><ol class="glist"><li>Dán ô <a href="#loi-dan">Lời dặn</a> vào ô <b>Hướng dẫn</b>, sửa chỗ [ ].</li><li>Bấm Lưu.</li></ol></div>
+     </div>
+    </div>
+    <div class="gstep"><p class="gh"><span>Bước 2</span>Các lần sau, chỉ 3 thao tác</p>
+     <ol class="gthree"><li><b>Mở Gem</b><span>Cột trái, bấm Kiểm tra hồ sơ bản vẽ trong mục Gem.</span></li><li><b>Thả file PDF</b><span>Hoặc bấm dấu + → Tải tệp lên.</span></li><li><b>Gõ 1 từ khóa</b><span>Dùng y như bảng từ khóa bên dưới.</span></li></ol>
+     <p class="gprep"><b>Lấy file:</b> bên dưới câu trả lời, bấm Chia sẻ và xuất → Xuất sang Google Trang tính (với bảng) hoặc Google Tài liệu, rồi tải về dạng Excel, Word.</p>
+    </div>
+    <div class="gstep"><p class="gh"><span>Lưu ý</span>Riêng khi dùng Gemini</p>
+     <ul class="gnote"><li><b>File CAD:</b> như ChatGPT, xuất bản vẽ ra PDF rồi mới đưa vào Gem.</li><li>Không chia sẻ Gem cho người khác, vì người được chia sẻ xem được cả lời dặn và file mẫu.</li><li>Không gõ ở khung chat trang chủ, luôn mở từ Gem.</li></ul>
+    </div>
+   </div>
+  </div>
+
+  <div class="sub" id="loi-dan">
+   <div class="h"><h3>Lời dặn dán vào dự án</h3><span>Dùng chung cho Claude, ChatGPT, Gemini</span></div>
+   <p class="d">Copy toàn bộ ô dưới đây, dán vào phần Hướng dẫn của dự án, sửa chỗ trong ngoặc vuông.</p>
+   <div class="code long"><pre id="loiDan">Bạn là kỹ sư hỗ trợ kiểm tra hồ sơ thiết kế kiến trúc của [tên bộ phận].
+
+QUY TẮC CHUNG
+- Viết tiếng Việt, ngắn, rõ. Kích thước ghi mm, diện tích ghi m².
+- Mọi con số phải kèm nguồn: số trang PDF, tên bản vẽ, mã ký hiệu. Với file CAD thì kèm layer, tên block hoặc tọa độ.
+- Không tự đặt số liệu, mã ký hiệu, kích thước. Thiếu thì ghi [CẦN BỔ SUNG], không chắc thì ghi [CẦN KIỂM TRA].
+- Không tự kết luận lỗi thiết kế. Chỗ lệch ghi "Chênh lệch – kỹ sư xem", kèm vị trí (trục, phòng) để kỹ sư mở ra xem.
+- Hồ sơ dày mà tôi chưa nêu phạm vi thì hỏi đúng một câu: kiểm tầng nào, hạng mục nào.
+- Kết quả dạng bảng thì trình bày trong chat. Tôi gõ "Xuất file Excel" hoặc "Xuất file Word" thì xuất đúng bảng đó thành file.
+
+VỚI FILE CAD (khi đã nối AutoCAD)
+- Chỉ đọc. Không sửa, không xóa, không lưu đè bản vẽ khi tôi chưa cho phép rõ ràng.
+- Trước khi làm, đọc danh sách layer và block của bản vẽ đang mở, báo lại một dòng.
+- Đếm theo block và layer, không đoán theo hình. Chữ và kích thước lấy từ đối tượng trong bản vẽ.
+
+TỪ KHÓA (có dấu hoặc không dấu đều được; có thể thêm phạm vi sau từ khóa)
+- DANH MỤC: liệt kê các trang trong file: số trang, tên bản vẽ, tầng, hạng mục.
+- TÌM TRANG: tìm các trang thuộc phạm vi tôi nêu, cho biết mỗi trang là bản vẽ gì.
+- BÓC BẢNG: đọc bảng thống kê thành bảng: mã, kích thước, số lượng, ghi chú, trang nguồn.
+- ĐẾM: đếm ký hiệu (PDF) hoặc block (CAD) theo từng mã; bảng: mã, số lượng, trang hoặc layer.
+- ĐỐI CHIẾU: so bảng thống kê với số đếm trên mặt bằng; bảng: mã, theo bảng, trên mặt bằng, chênh lệch, vị trí cần xem.
+- KÍCH THƯỚC: cộng từng chuỗi kích thước trục, so với kích thước tổng, báo chỗ không khớp.
+- DIỆN TÍCH: liệt kê phòng và diện tích ghi trên bản vẽ, cộng theo khu, so với tổng nếu có.
+- TRA CỨU: trả lời câu hỏi về hồ sơ, kèm trang và mã nguồn.
+- SOÁT LỖI: liệt kê mã ký hiệu không có trong bảng, ghi chú mâu thuẫn, số liệu lệch giữa các bản vẽ.
+- TRỌN GÓI: lần lượt làm TÌM TRANG, BÓC BẢNG, ĐỐI CHIẾU, KÍCH THƯỚC, rồi lập danh sách điểm cần kỹ sư xem.</pre><button class="copy" id="cpLoiDan"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+  </div>
+
+  <div class="sub">
+   <h3>Từ khóa dùng nhanh</h3>
+   <p class="d">Thả file kèm một từ khóa, có thể thêm phạm vi phía sau. Ví dụ: <code>ĐỐI CHIẾU – cửa đi tầng 1</code>. Gõ chữ thường hoặc không dấu cũng được, ví dụ <code>doi chieu</code>.</p>
+   <div class="tw"><table><thead><tr><th>Gõ</th><th>AI sẽ làm</th><th>Ví dụ khi kiểm tầng 1 (mục 05)</th></tr></thead><tbody>
+    <tr><td class="k">DANH MỤC</td><td>Liệt kê các trang: số trang, tên bản vẽ, tầng</td><td class="t">174 trang, nhóm theo tầng</td></tr>
+    <tr><td class="k">TÌM TRANG</td><td>Tìm các trang thuộc phạm vi cần kiểm</td><td class="t">Tầng 1: trang 2, 9, 19, 21–25</td></tr>
+    <tr><td class="k">BÓC BẢNG</td><td>Đọc bảng thống kê thành bảng tính, kèm trang nguồn</td><td class="t">55 mã cửa tầng 1, trang 25</td></tr>
+    <tr><td class="k">ĐẾM</td><td>Đếm ký hiệu trên PDF hoặc block trong CAD theo mã</td><td class="t">246 ký hiệu cửa trên trang 9</td></tr>
+    <tr><td class="k">ĐỐI CHIẾU</td><td>So bảng thống kê với số đếm, chỉ chỗ lệch</td><td class="t">51/55 mã khớp, 4 mã cho kỹ sư xem</td></tr>
+    <tr><td class="k">KÍCH THƯỚC</td><td>Cộng chuỗi kích thước trục, so với tổng</td><td class="t">3/3 chuỗi khớp</td></tr>
+    <tr><td class="k">DIỆN TÍCH</td><td>Liệt kê phòng, diện tích, cộng theo khu</td><td class="t">62 nhãn, 1.013 m²</td></tr>
+    <tr><td class="k">TRA CỨU</td><td>Trả lời câu hỏi kèm trang nguồn</td><td class="t">Cửa Đ1 quy cách thế nào?</td></tr>
+    <tr><td class="k">SOÁT LỖI</td><td>Tìm mã không có trong bảng, ghi chú mâu thuẫn giữa các bản vẽ</td><td class="t">Trước khi gửi góp ý cho thiết kế</td></tr>
+    <tr><td class="k">TRỌN GÓI</td><td>Làm lần lượt từ tìm trang đến đối chiếu, lập danh sách điểm cần xem</td><td class="t">Ra kết quả như mục 05</td></tr>
+   </tbody></table></div>
+  </div>
+
+  <div class="two">
+   <div class="sub">
+    <h3>Câu sửa nhanh</h3>
+    <p class="d">Kết quả chưa vừa ý thì gõ tiếp ngay bên dưới, không cần làm lại.</p>
+    <div class="tw narrow"><table><thead><tr><th>Muốn</th><th>Gõ</th></tr></thead><tbody>
+     <tr><td>Thu hẹp phạm vi</td><td class="t">Chỉ làm trang [...].</td></tr>
+     <tr><td>Sửa chỗ đọc sai</td><td class="t">Mã [...] ở trang [...] đọc sai, đúng là [...]. Làm lại.</td></tr>
+     <tr><td>Cần vị trí</td><td class="t">Ghi rõ vị trí từng ký hiệu theo trục, phòng.</td></tr>
+     <tr><td>Cần ảnh để kiểm</td><td class="t">Cắt ảnh chỗ [...] để tôi xem.</td></tr>
+     <tr><td>Bị cắt giữa chừng</td><td class="t">Viết tiếp.</td></tr>
+     <tr><td>Lấy file</td><td class="t">Xuất file Excel. / Xuất file Word.</td></tr>
+    </tbody></table></div>
+   </div>
+   <div class="sub">
+    <h3>Lưu ý</h3>
+    <ul class="gnote boxed">
+     <li>Chỉ đưa hồ sơ lên AI khi hợp đồng và quy định công ty cho phép. Không đưa hồ sơ mật.</li>
+     <li>PDF xuất từ CAD đọc chính xác hơn PDF scan. Chữ quá nhỏ, chữ xoay dọc, font cũ dễ đọc sai, nên kiểm lại số liệu quan trọng.</li>
+     <li>Với file CAD: sao lưu trước, để AI chỉ đọc. Chỉ cho sửa khi đã kiểm tra kỹ.</li>
+     <li>Luôn đọc lại các chỗ [CẦN KIỂM TRA], [CẦN BỔ SUNG] và các điểm chênh lệch trước khi gửi đi.</li>
+    </ul>
+   </div>
+  </div>
+  <div class="sub">
+   <h3>Câu lệnh mẫu</h3>
+   <div class="tw"><table><thead><tr><th>Loại</th><th>Câu lệnh</th><th></th></tr></thead><tbody id="prompts"></tbody></table></div>
+  </div>
+ </div>
+</div></section>
+
+<!-- 05 -->
+<section class="sec" id="s5"><div class="w">
+ <div class="side"><p class="n">05</p><h2>Kiểm chứng trên hồ sơ tầng 1</h2><p>Toàn bộ số liệu dưới đây do AI đọc từ file PDF hồ sơ kiến trúc, có ghi trang nguồn.</p></div>
+ <div class="body">
+
+  <div class="sub">
+   <div class="h"><h3>5.1 Hồ sơ đầu vào</h3></div>
+   <p class="d">Từ file PDF 174 trang, AI tự xác định 7 trang thuộc tầng 1 và thông tin cần lấy ở mỗi trang.</p>
+   <div class="tw"><table><thead><tr><th>Trang</th><th>Bản vẽ</th><th>Thông tin AI trích xuất</th></tr></thead><tbody>
+    <tr><td class="k">2</td><td>Mặt bằng ghi chú, bố trí nội thất</td><td class="t">Tên phòng, diện tích, số chỗ ngồi, ghi chú</td></tr>
+    <tr><td class="k">9</td><td>Mặt bằng kích thước</td><td class="t">Lưới trục, chuỗi kích thước, ký hiệu cửa, cao độ</td></tr>
+    <tr><td class="k">19</td><td>Chi tiết kỹ thuật tầng 1, 2</td><td class="t">Mã chi tiết CT…-T1 và vị trí tham chiếu</td></tr>
+    <tr><td class="k">21–24</td><td>Chi tiết cửa đi, cửa sổ</td><td class="t">Mặt đứng, mặt cắt, quy cách kính, phụ kiện</td></tr>
+    <tr><td class="k">25</td><td>Bảng thống kê cửa đi, cửa sổ</td><td class="t">Mã, kích thước, số lượng theo từng tầng</td></tr>
+   </tbody></table></div>
+  </div>
+
+  <div class="sub">
+   <div class="h"><h3>5.2 Rà soát mặt bằng kích thước</h3><span>Trang 9</span></div>
+   <p class="d">AI đánh dấu các điểm đã kiểm tra trên mặt bằng. Chọn một điểm để xem nội dung.</p>
+   <div class="planwrap">
+    <figure class="fig"><div class="pic" id="plan"><img src="images/mat-bang.jpg" width="1800" height="1105" alt="Mặt bằng kích thước tầng 1 với 6 điểm kiểm tra được đánh số"></div><figcaption><b>Hình 1.</b> Mặt bằng kích thước tầng 1. Xanh than: khớp. Vàng đất: cần kỹ sư xem.</figcaption></figure>
+    <ul class="notes" id="notes"></ul>
+   </div>
+  </div>
+
+  <div class="sub">
+   <div class="h"><h3>5.3 Kiểm tra chuỗi kích thước</h3><span>Trang 9</span></div>
+   <p class="d">AI cộng từng đoạn trong chuỗi kích thước và so với kích thước tổng ghi trên bản vẽ.</p>
+   <div class="tw"><table><thead><tr><th>Chuỗi</th><th class="r">Số đoạn</th><th class="r">Tổng các đoạn (mm)</th><th class="r">Ghi trên bản vẽ (mm)</th><th>Kết quả</th></tr></thead><tbody id="chains"></tbody></table></div>
+   <p class="note">Lưới trục gồm 22 trục chữ (A đến N, có trục phụ) và 17 trục số (1 đến 13, có trục phụ). Cao độ ±0.000 tương đương +4,20 m hệ VN2000.</p>
+  </div>
+
+  <div class="sub">
+   <div class="h"><h3>5.4 Phòng và diện tích</h3><span>Trang 2</span></div>
+   <p class="d">62 nhãn diện tích trên mặt bằng, tổng 1.013 m². Bảng dưới liệt kê các phòng chính theo khu.</p>
+   <div class="rm">
+    <div>
+     <div class="seg" role="group" aria-label="Chọn ảnh"><button id="rmA" aria-pressed="true">Khoa khám bệnh</button><button id="rmB" aria-pressed="false">Chẩn đoán hình ảnh</button></div>
+     <figure class="fig" style="margin-top:12px"><button class="zoomable" id="rmPic" aria-label="Phóng to hình"><span class="pic" style="display:block"><img id="rmImg" src="images/khoa-kham.jpg" alt="Trích mặt bằng nội thất khu khoa khám bệnh"></span></button><figcaption id="rmCap"><b>Hình 2.</b> Trích mặt bằng nội thất, khu khoa khám bệnh.</figcaption></figure>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+     <div class="seg" id="rmSeg" role="group" aria-label="Lọc theo khu"></div>
+     <div class="tw scroll narrow"><table><thead><tr><th>Phòng</th><th class="r">Diện tích</th></tr></thead><tbody id="rooms"></tbody></table></div>
+     <p class="note" id="rsum"></p>
+    </div>
+   </div>
+  </div>
+
+  <div class="sub">
+   <div class="h"><h3>5.5 Cửa đi, cửa sổ: bảng thống kê đối chiếu mặt bằng</h3><span>Trang 25 và trang 9</span></div>
+   <p class="d">55 mã, 250 bộ (125 cửa đi, 125 cửa sổ). AI đếm được 246 ký hiệu trên mặt bằng. 51 mã khớp, 4 mã chênh lệch.</p>
+   <div class="tools"><div class="seg" id="dSeg" role="group" aria-label="Lọc"></div><div class="srch"><label for="dq">Tìm mã</label><input id="dq" type="search" placeholder="VD: ĐCC" autocomplete="off"><button class="lnk" id="pdfSrc"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg>Bảng gốc</button></div></div>
+   <div class="tw scroll"><table><thead><tr><th>Mã</th><th>Loại</th><th>Rộng × cao (mm)</th><th>Mô tả</th><th class="r">Bảng</th><th class="r">Mặt bằng</th><th>Kết quả</th></tr></thead><tbody id="doors"></tbody></table></div>
+  </div>
+
+  <div class="sub">
+   <div class="h"><h3>5.6 Các điểm chênh lệch</h3></div>
+   <p class="d">AI chỉ ra vị trí và đưa ảnh cắt. Kết luận cuối cùng do kỹ sư đưa ra.</p>
+   <div class="tw"><table><thead><tr><th>Mã</th><th class="r">Bảng</th><th class="r">Mặt bằng</th><th>Nhận định</th><th>Đề xuất</th></tr></thead><tbody id="lech"></tbody></table></div>
+   <div class="two">
+    <figure class="fig"><button class="zoomable" data-lb="dv5" data-cap="Hình 3. ĐV5: cửa 2 cánh trong ô 1.400, một ký hiệu (trang 9)"><span class="pic" style="display:block"><img src="images/dv5.jpg" alt="Trích mặt bằng: cửa ĐV5 hai cánh" loading="lazy"></span></button><figcaption><b>Hình 3.</b> ĐV5: cửa 2 cánh trong ô 1.400, trên mặt bằng chỉ đặt 1 ký hiệu.</figcaption></figure>
+    <figure class="fig"><button class="zoomable" data-lb="skt2" data-cap="Hình 4. Ô kỹ thuật có ký hiệu SKT2 (trang 9)"><span class="pic" style="display:block"><img src="images/skt2.jpg" alt="Trích mặt bằng: ô kỹ thuật có ký hiệu SKT2" loading="lazy"></span></button><figcaption><b>Hình 4.</b> SKT2 tại ô kỹ thuật cạnh phòng cấp phát thuốc và phòng đăng ký.</figcaption></figure>
+   </div>
+  </div>
+
+  <div class="sub">
+   <div class="h"><h3>5.7 Hỏi đáp trên hồ sơ</h3></div>
+   <p class="d">Một số câu hỏi thực tế và câu trả lời của AI, kèm trang nguồn để đối chiếu.</p>
+   <div class="faq" id="faq"></div>
+  </div>
+ </div>
+</div></section>
+
+<section class="sec" id="kl"><div class="w">
+ <div class="side"><p class="n">KẾT LUẬN</p><h2>Kết luận và kiến nghị</h2></div>
+ <div class="body">
+  <ol class="recs">
+   <li><div><b>AI đọc và hiểu được hồ sơ bản vẽ PDF.</b><p>Trên tầng 1: tìm đúng 7 trang, bóc 62 nhãn diện tích, 55 mã cửa, 3 chuỗi kích thước, trả lời câu hỏi kèm trang nguồn.</p></div></li>
+   <li><div><b>Giá trị lớn nhất là đối chiếu chéo.</b><p>51/55 mã cửa khớp, 4 điểm chênh lệch được khoanh vùng kèm ảnh, kỹ sư chỉ cần xem 4 chỗ thay vì đếm lại 250 bộ.</p></div></li>
+   <li><div><b>Bước tiếp theo với file CAD.</b><p>Nối AutoCAD qua MCP để đo theo tọa độ thật: chiều dài tường, diện tích ốp lát, khoảng cách tới trục, rồi đối chiếu với PDF.</p></div></li>
+   <li><div><b>Áp dụng có kiểm soát.</b><p>Giữ nguyên tắc chỉ nguồn và kỹ sư kết luận; bắt đầu với các việc đếm, tra cứu, đối chiếu trước khi mở rộng.</p></div></li>
+  </ol>
+ </div>
+</div></section>
+</main>
+
+<footer class="ft"><div class="w"><span>Báo cáo · 23/11/2026</span><span>Nguồn dữ liệu: hồ sơ thiết kế kiến trúc (PDF), trang 2, 9, 19, 21–25.</span></div></footer>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Ảnh phóng to"><button class="x" id="lbx"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>Đóng</button><figure><img id="lbImg" src="" alt=""><figcaption id="lbCap"></figcaption></figure></div>
+<p class="sr" id="live" aria-live="polite"></p>
+
+<script>
+const ICON={"arrowR": "<path d=\"M5 12h14M13 6l6 6-6 6\"/>", "arrowL": "<path d=\"M19 12H5M11 6l-6 6 6 6\"/>", "file": "<path d=\"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z\"/><path d=\"M14 2v6h6M8 13h8M8 17h5\"/>", "globe": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20\"/>", "users": "<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8\"/>", "plus": "<path d=\"M12 5v14M5 12h14\"/>", "minus": "<path d=\"M5 12h14\"/>", "eye": "<path d=\"M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z\"/><circle cx=\"12\" cy=\"12\" r=\"3\"/>", "scale": "<path d=\"M12 3v18M5 7h14M5 7l-3 7a4 4 0 0 0 6 0zM19 7l-3 7a4 4 0 0 0 6 0z\"/>", "star": "<path d=\"M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z\"/>", "plug": "<path d=\"M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4\"/>", "check": "<path d=\"M20 6L9 17l-5-5\"/>", "layers": "<path d=\"M12 2L2 7l10 5 10-5z\"/><path d=\"M2 17l10 5 10-5M2 12l10 5 10-5\"/>", "route": "<circle cx=\"6\" cy=\"19\" r=\"3\"/><circle cx=\"18\" cy=\"5\" r=\"3\"/><path d=\"M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15\"/>", "alert": "<path d=\"M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z\"/><path d=\"M12 9v4M12 17h.01\"/>", "play": "<path d=\"M7 4l13 8-13 8z\"/>", "wrench": "<path d=\"M14.7 6.3a4 4 0 0 0 5 5L22 14l-8 8-2.3-2.3a4 4 0 0 0-5-5L4 12l3-3 2.3 2.3a4 4 0 0 0 5.4-5z\"/>", "terminal": "<path d=\"M4 17l6-6-6-6M12 19h8\"/>", "chat": "<path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/>", "cube": "<path d=\"M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4a2 2 0 0 0 1-1.7z\"/><path d=\"M3.3 7L12 12l8.7-5M12 22V12\"/>", "scan": "<path d=\"M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10\"/>", "pin": "<path d=\"M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/>", "chart": "<path d=\"M3 3v18h18M8 17V11M13 17V7M18 17v-4\"/>", "grid": "<path d=\"M3 3h18v18H3zM3 9h18M9 21V9\"/>", "x": "<path d=\"M18 6L6 18M6 6l12 12\"/>", "copy": "<rect x=\"9\" y=\"9\" width=\"12\" height=\"12\" rx=\"2\"/><path d=\"M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1\"/>", "refresh": "<path d=\"M23 4v6h-6M1 20v-6h6\"/><path d=\"M3.5 9a9 9 0 0 1 14.8-3.4L23 10M1 14l4.7 4.4A9 9 0 0 0 20.5 15\"/>", "cpu": "<rect x=\"4\" y=\"4\" width=\"16\" height=\"16\" rx=\"2\"/><rect x=\"9\" y=\"9\" width=\"6\" height=\"6\"/><path d=\"M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3\"/>", "link": "<path d=\"M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7\"/><path d=\"M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7\"/>", "ruler": "<path d=\"M21.3 8.7L8.7 21.3a1 1 0 0 1-1.4 0l-4.6-4.6a1 1 0 0 1 0-1.4L15.3 2.7a1 1 0 0 1 1.4 0l4.6 4.6a1 1 0 0 1 0 1.4zM7.5 10.5l2 2M10.5 7.5l2 2M13.5 4.5l2 2M4.5 13.5l2 2\"/>", "upload": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12\"/>", "search": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"M21 21l-4.3-4.3\"/>", "zoom": "<circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"M21 21l-4.3-4.3M11 8v6M8 11h6\"/>"};
+const IMG={dv5:"images/dv5.jpg",skt2:"images/skt2.jpg",p2kb:"images/khoa-kham.jpg",p2cdha:"images/chan-doan.jpg",p25:"images/bang-goc.jpg"};
+const DOORS=[["CK1", "Cửa đi", "1.600", "2.200", 1, 1, "Cửa sắt kéo"], ["MSCC1", "Cửa đi", "3.400", "3.900", 2, 2, "Rèm ngăn cháy EI60"], ["MSCC2", "Cửa đi", "1.700", "3.900", 1, 1, "Rèm ngăn cháy EI60"], ["Đ1", "Cửa đi", "1.400", "2.200", 21, 21, "2 cánh mở, kính cường lực 8 mm"], ["Đ2", "Cửa đi", "950", "2.200", 26, 26, "1 cánh mở, kính cường lực 8 mm"], ["Đ3", "Cửa đi", "950", "2.200", 6, 6, "1 cánh tự đóng, kính 8 mm"], ["Đ4", "Cửa đi", "1.600", "2.200", 3, 3, "2 cánh mở, kính cường lực 8 mm"], ["Đ6", "Cửa đi", "1.200", "2.200", 1, 1, "2 cánh mở, kính cường lực 8 mm"], ["ĐC1", "Cửa đi", "1.600", "2.400", 7, 7, "Cửa chì"], ["ĐC2", "Cửa đi", "950", "2.200", 2, 2, "Cửa chì"], ["ĐC3", "Cửa đi", "1.000", "2.200", 6, 6, "Cửa chì"], ["ĐCC1", "Cửa đi", "1.400", "2.200", 5, 5, "Chống cháy 60 phút"], ["ĐCC2", "Cửa đi", "1.800", "2.200", 2, 2, "Chống cháy 60 phút"], ["ĐCC4", "Cửa đi", "1.800", "2.200", 1, 1, "Chống cháy 60 phút"], ["ĐCC5", "Cửa đi", "1.400", "2.200", 1, 1, "Chống cháy 60 phút"], ["ĐCC6", "Cửa đi", "1.000", "2.200", 2, 2, "Chống cháy 60 phút"], ["ĐCC8", "Cửa đi", "1.000", "1.800", 2, 2, "Chống cháy 60 phút"], ["ĐK1", "Cửa đi", "2.600", "2.600", 2, 2, "2 cánh mở 2 hướng, khung kính fix"], ["ĐK2", "Cửa đi", "4.000", "2.600", 1, 1, "Khung kính có cửa 2 cánh"], ["ĐK3", "Cửa đi", "2.600", "2.200", 1, 1, "Khung kính có cửa 2 cánh"], ["ĐRF", "Cửa đi", "1.400", "2.200", 1, 1, "Cửa phòng MRI"], ["ĐV1", "Cửa đi", "950", "2.200", 9, 9, "1 cánh mở, kính 8 mm"], ["ĐV2", "Cửa đi", "1.400", "2.200", 1, 1, "2 cánh mở, kính 8 mm"], ["ĐV3", "Cửa đi", "thay đổi", "2.175", 3, 3, "Cánh mở gắn vách kính"], ["ĐV4", "Cửa đi", "900", "2.200", 2, 2, "1 cánh mở, kính 8 mm"], ["ĐV5", "Cửa đi", "700", "2.150", 2, 1, "Cánh mở gắn vách kính"], ["ĐW", "Cửa đi", "800", "2.200", 13, 13, "1 cánh mở, kính mờ"], ["ĐW1", "Cửa đi", "900", "2.200", 1, 1, "1 cánh mở, kính mờ"], ["S1", "Cửa sổ", "2.400", "1.300", 14, 14, "4 cánh trượt, kính 5 mm"], ["S1.1", "Cửa sổ", "2.400", "1.300", 10, 10, "4 cánh trượt, chèn bịt kính 8 mm"], ["S2", "Cửa sổ", "1.200", "1.300", 18, 17, "2 cánh trượt, kính 5 mm"], ["S2.1", "Cửa sổ", "1.200", "1.300", 1, 1, "2 cánh trượt, chèn bịt kính"], ["S3", "Cửa sổ", "1.400", "1.300", 2, 2, "2 cánh trượt, kính 5 mm"], ["S3.1", "Cửa sổ", "1.400", "1.300", 5, 5, "2 cánh trượt, chèn bịt kính"], ["S4.1", "Cửa sổ", "1.600", "1.300", 1, 1, "2 cánh trượt, chèn bịt kính"], ["S5", "Cửa sổ", "800", "1.300", 6, 6, "1 cánh mở, kính 5 mm"], ["S6", "Cửa sổ", "1.600", "1.800", 1, 1, "2 cánh trượt, chèn bịt kính"], ["S7", "Cửa sổ", "600", "1.800", 18, 18, "1 cánh lật, kính 5 mm"], ["S-C1", "Cửa sổ", "800", "600", 5, 5, "Cửa sổ chì"], ["S-C2", "Cửa sổ", "1.200", "800", 2, 2, "Cửa sổ chì"], ["SC1'", "Cửa sổ", "2.400", "500", 2, 2, "Cửa sổ cao 2 ô, kính 8 mm"], ["SC3", "Cửa sổ", "1.800", "400", 2, 2, "Cửa sổ cao 2 ô, kính 5 mm"], ["SC3'", "Cửa sổ", "1.800", "500", 2, 2, "Cửa sổ cao 2 ô, kính 8 mm"], ["SCC1", "Cửa sổ", "1.800", "1.300", 1, 1, "Cửa sổ chống cháy EI60, 3 cánh"], ["SKT1", "Cửa sổ", "500", "800", 2, 2, "Lá sách, 1 cánh mở"], ["SKT2", "Cửa sổ", "800", "600", 4, 3, "Lá sách, không mở"], ["SKTCC", "Cửa sổ", "700", "1.600", 3, 3, "Cửa kỹ thuật chống cháy EI60"], ["SLS1", "Cửa sổ", "2.400", "600", 4, 3, "Lá sách, không mở"], ["SRF", "Cửa sổ", "1.200", "800", 1, 1, "Cửa sổ phòng MRI"], ["SV1", "Cửa sổ", "1.200", "1.200", 10, 10, "2 cánh trượt, kính 5 mm"], ["SW1", "Cửa sổ", "1.200", "400", 2, 2, "2 cánh lật, kính mờ"], ["SW2", "Cửa sổ", "600", "400", 6, 6, "Khung không mở, kính mờ"], ["SW3", "Cửa sổ", "500", "400", 1, 1, "1 cánh lật, kính mờ"], ["SW4", "Cửa sổ", "900", "400", 1, 1, "Khung không mở, kính mờ"], ["SWCC", "Cửa sổ", "900", "400", 1, 1, "Cửa sổ chống cháy"]];
+const ic=n=>`<svg class="ic" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const fmt=n=>n.toLocaleString('vi-VN');
+const say=t=>{$('#live').textContent='';setTimeout(()=>$('#live').textContent=t,30)};
+const store={get(k,d){try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+function copyText(btn,text,label){const ok=()=>{const h=btn.innerHTML;btn.innerHTML=ic('check')+(label?'Đã copy':'');btn.classList.add('done');say('Đã copy');setTimeout(()=>{btn.innerHTML=h;btn.classList.remove('done')},1500)};
+ const fb=()=>{const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();try{document.execCommand('copy');ok()}catch(e){}t.remove()};
+ try{navigator.clipboard.writeText(text).then(ok,fb)}catch(e){fb()}}
+document.addEventListener('click',e=>{const b=e.target.closest('.copy[data-c],.cp[data-c]');if(b)copyText(b,decodeURIComponent(b.dataset.c),b.classList.contains('copy'))});
+
+/* Lightbox */
+let lbFrom=null;
+function openLb(src,cap,from){lbFrom=from;$('#lbImg').src=src;$('#lbImg').alt=cap;$('#lbCap').textContent=cap;$('#lb').hidden=false;$('#lbx').focus()}
+function closeLb(){$('#lb').hidden=true;lbFrom&&lbFrom.focus()}
+$('#lbx').onclick=closeLb;$('#lb').addEventListener('click',e=>{if(e.target.id==='lb')closeLb()});
+document.addEventListener('keydown',e=>{if($('#lb').hidden)return;if(e.key==='Escape')closeLb();if(e.key==='Tab'){e.preventDefault();$('#lbx').focus()}});
+document.addEventListener('click',e=>{const z=e.target.closest('[data-lb]');if(z)openLb(IMG[z.dataset.lb],z.dataset.cap,z)});
+
+/* Nav scroll-spy */
+const navA=$$('.nav a');const secs=navA.map(a=>$(a.getAttribute('href')));
+const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){navA.forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#'+en.target.id))}})},{rootMargin:'-40% 0px -55% 0px'});
+secs.forEach(s=>s&&io.observe(s));
+
+/* 01 roles */
+const roles=[['Đếm ký hiệu cửa trên mặt bằng','ai','246 ký hiệu, đếm theo từng mã'],['Bóc bảng thống kê PDF ra bảng tính','ai','55 mã, kích thước, số lượng theo tầng'],['Đối chiếu bảng thống kê với mặt bằng','ai','Chỉ ra 4 mã chênh lệch kèm trang và vị trí'],['Cộng chuỗi kích thước, so với tổng','ai','3 chuỗi trục, đều khớp'],['Tra cứu nhanh trong hồ sơ dày','ai','Diện tích phòng, quy cách cửa, ghi chú'],['Quyết định chỗ lệch là lỗi hay không','kts','ĐV5: một ký hiệu cho cửa 2 cánh, không phải lỗi'],['Ký duyệt hồ sơ','kts','Trách nhiệm chuyên môn thuộc kỹ sư'],['Lập danh sách góp ý gửi đơn vị thiết kế','both','AI soạn kèm ảnh cắt, kỹ sư chốt nội dung']];
+const who={ai:'AI',kts:'Kỹ sư',both:'Cùng làm'};
+$('#roles').innerHTML=roles.map(r=>`<tr><td>${r[0]}</td><td><span class="tag ${r[1]}">${who[r[1]]}</span></td><td class="t">${r[2]}</td></tr>`).join('');
+
+/* 02 AI table */
+const ais=[['Claude',[1,1,1],'76,8','Đọc PDF bản vẽ, có bộ nối AutoCAD qua MCP, tự viết lệnh xử lý số liệu.',1],
+ ['ChatGPT',[1,0,1],'72,8','Đọc PDF tốt. Nối phần mềm trên máy chủ yếu qua server từ xa.'],
+ ['Gemini',[1,0,1],'75,8','Mạnh với tài liệu rất dài. Nối phần mềm qua Gemini CLI, chưa thử với AutoCAD.'],
+ ['M365 Copilot',[1,0,0],'—','Làm việc trong Word, Excel, Teams. Chỉ MCP từ xa qua URL.'],
+ ['Autodesk Assistant',[0,1,0],'—','Nằm trong phần mềm Autodesk, hỏi đáp trong phạm vi phần mềm đó.']];
+const yn=v=>v?`<span class="yes">${ic('check')}</span><span class="sr">Có</span>`:`<span class="no">${ic('minus')}</span><span class="sr">Không</span>`;
+$('#ais').innerHTML=ais.map(a=>`<tr class="${a[4]?'rec':''}"><td><b>${a[0]}</b>${a[4]?' <span class="tag ai">Khuyến nghị</span>':''}</td>${a[1].map(v=>`<td class="c">${yn(v)}</td>`).join('')}<td class="r num">${a[2]}${a[2]!=='—'?'%':''}</td><td class="t">${a[3]}</td></tr>`).join('');
+
+/* 03 steps */
+const steps=[['Gửi hồ sơ',1,'Kỹ sư gửi file PDF hoặc mở file CAD, nêu rõ phạm vi cần kiểm.','File PDF 174 trang, yêu cầu kiểm chi tiết tầng 1.'],
+ ['Xác định trang',0,'AI đọc tên bản vẽ, lọc ra các trang liên quan.','Trang 2, 9, 19, 21–25.'],
+ ['Bóc tách dữ liệu',0,'AI đọc chữ, bảng, ký hiệu, kích thước thành dữ liệu có cấu trúc.','62 phòng, 55 mã cửa, 3 chuỗi kích thước.'],
+ ['Đối chiếu chéo',0,'So bảng thống kê với mặt bằng, so tổng các đoạn với kích thước tổng.','51/55 mã khớp, 3/3 chuỗi khớp.'],
+ ['Kỹ sư kết luận',1,'Kỹ sư xem ảnh cắt từng điểm lệch và quyết định.','ĐV5 không phải lỗi; S2, SKT2, SLS1 cần hỏi thiết kế.'],
+ ['Xuất báo cáo',0,'AI lập bảng tổng hợp và danh sách góp ý kèm ảnh, trang nguồn.','Gửi đơn vị thiết kế xử lý.']];
+$('#steps').innerHTML=steps.map((s,i)=>`<li><div class="top"><span class="sn">BƯỚC ${i+1}</span><span class="tag ${s[1]?'kts':'ai'}">${s[1]?'Kỹ sư':'AI'}</span></div><h4>${s[0]}</h4><p>${s[2]}</p><p class="ex">Tầng 1: ${s[3]}</p></li>`).join('');
+
+/* 04 install */
+const wiz=[['Claude Desktop',[['Tải và cài Claude Desktop','Tại claude.ai/download, đăng nhập tài khoản công ty.'],['Mở file cấu hình khi cần','Settings → Developer → Edit Config. Sửa xong thì thoát hẳn và mở lại Claude.']]],
+ ['Đọc PDF',[['Kéo thả file PDF vào khung chat','Không cần cài thêm.'],['Với file dày, chỉ định phạm vi','Ví dụ: “Chỉ đọc các trang của tầng 1.”'],['Yêu cầu dẫn nguồn','Ví dụ: “Trả lời kèm số trang và mã ký hiệu.”']]],
+ ['AutoCAD MCP',[['Cài Python, Git, uv','Môi trường cho AutoCAD MCP.','winget install Python.Python.3.12\nwinget install Git.Git\npowershell -c "irm https://astral.sh/uv/install.ps1 | iex"'],['Tải mã nguồn và cài thư viện','','git clone https://github.com/puran-water/autocad-mcp.git\ncd autocad-mcp\nuv sync'],['Nạp LISP vào AutoCAD','Gõ APPLOAD, chọn lisp-code/mcp_dispatch.lsp, bấm Load.'],['Khai báo trong Claude','Đổi đường dẫn cho đúng máy.','{\n  "mcpServers": {\n    "autocad-mcp": {\n      "command": "C:\\\\path\\\\to\\\\autocad-mcp\\\\.venv\\\\Scripts\\\\python.exe",\n      "args": ["-m", "autocad_mcp"],\n      "env": { "AUTOCAD_MCP_BACKEND": "auto" }\n    }\n  }\n}'],['Kiểm tra kết nối','Hỏi Claude: “Kiểm tra trạng thái AutoCAD MCP, bản vẽ đang mở có những layer nào?”']]]];
+let tab=store.get('tab4',0);if(!(tab>=0&&tab<wiz.length))tab=0;
+function renderWiz(){$('#tabs').innerHTML=wiz.map((w,a)=>`<button role="tab" aria-selected="${a===tab}" data-a="${a}">${w[0]}</button>`).join('');
+ $('#ws').innerHTML=wiz[tab][1].map(s=>`<li><div style="min-width:0"><b>${s[0]}</b>${s[1]?`<p>${s[1]}</p>`:''}${s[2]?`<div class="code"><pre>${esc(s[2])}</pre><button class="copy" data-c="${encodeURIComponent(s[2])}">${ic('copy')}Copy</button></div>`:''}</div></li>`).join('')}
+$('#tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;tab=+b.dataset.a;store.set('tab4',tab);renderWiz()});renderWiz();
+const prompts=[['Đọc PDF','Trong file này, tìm các trang của tầng 1 và cho biết mỗi trang là bản vẽ gì.'],['Đọc PDF','Đọc bảng thống kê cửa, lọc riêng tầng 1 và lập lại thành bảng Excel.'],['Đọc PDF','Liệt kê các phòng tầng 1 kèm diện tích, nhóm theo khoa.'],['Kiểm tra','Đếm ký hiệu cửa trên mặt bằng tầng 1, so với bảng thống kê, mã nào lệch thì cắt ảnh chỗ đó.'],['Kiểm tra','Cộng các chuỗi kích thước trục, so với kích thước tổng, báo chỗ không khớp.'],['Đọc CAD','Bản vẽ đang mở có những layer nào? Layer nào chứa ký hiệu cửa?'],['Đọc CAD','Đếm block cửa theo tên, xuất danh sách kèm tọa độ.'],['Đọc CAD','Đo tổng chiều dài tường trên layer tường xây tầng 1.']];
+$('#prompts').innerHTML=prompts.map(p=>`<tr><td style="white-space:nowrap"><span class="tag ${p[0]==='Kiểm tra'?'both':p[0]==='Đọc CAD'?'kts':'ai'}">${p[0]}</span></td><td>${p[1]}</td><td class="r"><button class="cp" data-c="${encodeURIComponent(p[1])}" aria-label="Copy câu lệnh">${ic('copy')}</button></td></tr>`).join('');
+
+/* 05.2 plan markers */
+const pins=[['1',3.5,46,1,'Chuỗi trục 1 → 13','15 đoạn, cộng 44.050 mm, khớp kích thước tổng.'],
+ ['2',49.8,92.5,1,'Chuỗi trục A → N','13 đoạn, cộng 87.720 mm, khớp kích thước tổng.'],
+ ['3',33.8,44.8,0,'ĐV5: mặt bằng 1, bảng 2','Cửa 2 cánh trong ô 1.400, mỗi cánh 700. Bảng đếm theo cánh, không phải lỗi.'],
+ ['4',27.6,49.1,0,'SKT2: mặt bằng 3, bảng 4','Ô kỹ thuật cạnh phòng cấp phát thuốc, phòng đăng ký. Cần hỏi thiết kế.'],
+ ['5',68,41.8,0,'S2: mặt bằng 17, bảng 18','Cửa sổ 2 cánh trượt 1.200 × 1.300. Thiếu 1 ký hiệu hoặc bảng thừa 1.'],
+ ['6',49.5,68.3,0,'SLS1: mặt bằng 3, bảng 4','Cửa sổ lá sách 2.400 × 600 ở mặt ngoài. Nên đối chiếu mặt đứng.']];
+$('#plan').insertAdjacentHTML('beforeend',pins.map((p,i)=>`<button class="mk ${p[3]?'ok':'fl'}" style="left:${p[1]}%;top:${p[2]}%" data-i="${i}" aria-pressed="false" aria-label="Điểm ${p[0]}: ${p[4]}">${p[0]}</button>`).join(''));
+$('#notes').innerHTML=pins.map((p,i)=>`<li><button data-i="${i}" aria-pressed="false"><span class="b ${p[3]?'ok':'fl'}">${p[0]}</span><span><b>${p[4]}</b><span class="t">${p[5]}</span></span></button></li>`).join('');
+function selPin(i){$$('#plan .mk, #notes button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.i===i));say(pins[i][4]+'. '+pins[i][5])}
+$('#plan').addEventListener('click',e=>{const b=e.target.closest('.mk');if(b){selPin(+b.dataset.i);$(`#notes button[data-i="${b.dataset.i}"]`).scrollIntoView({block:'nearest'})}});
+$('#notes').addEventListener('click',e=>{const b=e.target.closest('button');if(b)selPin(+b.dataset.i)});
+
+/* 05.3 chains */
+const chains=[['Chuỗi trên cùng, trục A → N',[1900,2100,3300,2300,4900,7200,2350,3300,1550,4150,3850,3300,3900,7200,420,7200,7200,7200,2100,5100,7200],87720],
+ ['Chuỗi trục phía dưới, A → N',[7300,7200,7200,7200,8000,7200,7200,420,7200,7200,7200,7200,7200],87720],
+ ['Chuỗi trục bên trái, 1 → 13',[3600,2500,1400,1100,1400,3200,6400,3200,7100,1900,1700,1900,2700,2300,3650],44050]];
+$('#chains').innerHTML=chains.map(c=>{const s=c[1].reduce((a,b)=>a+b,0),ok=s===c[2];return `<tr><td>${c[0]}<details style="margin-top:4px"><summary class="note" style="cursor:pointer">Xem các đoạn</summary><p class="note mono" style="margin-top:4px;overflow-wrap:anywhere">${c[1].map(fmt).join(' + ')}</p></details></td><td class="r num">${c[1].length}</td><td class="r num">${fmt(s)}</td><td class="r num">${fmt(c[2])}</td><td><span class="tag ${ok?'ok':'fl'}">${ic(ok?'check':'alert')}${ok?'Khớp':'Lệch'}</span></td></tr>`}).join('');
+
+/* 05.4 rooms */
+const rooms=[['Khám bệnh','P. Khám 01',13],['Khám bệnh','P. Khám 02',14],['Khám bệnh','P. Khám 03',13],['Khám bệnh','P. Khám 04',13],['Khám bệnh','P. Khám 05',13],['Khám bệnh','P. Khám 06',14],['Khám bệnh','P. Khám 07',14],['Khám bệnh','P. Khám 08',13],['Khám bệnh','P. Bó bột',18],['Khám bệnh','P. Lấy mẫu xét nghiệm',35],['Khám bệnh','P. Đăng ký',30],['Khám bệnh','P. Thu phí',17],['Khám bệnh','P. Cấp phát thuốc',34],['Khám bệnh','P. Hành chính khoa khám bệnh',22],['Khám bệnh','P. Trực khoa khám bệnh',16],
+ ['Chẩn đoán hình ảnh','P. Máy MRI',38],['Chẩn đoán hình ảnh','P. Điều khiển MRI',22],['Chẩn đoán hình ảnh','P. Máy kỹ thuật MRI',9],['Chẩn đoán hình ảnh','P. CT-Scanner 01',28],['Chẩn đoán hình ảnh','P. Điều khiển CT 01',11],['Chẩn đoán hình ảnh','P. CT-Scanner 02',30],['Chẩn đoán hình ảnh','P. Điều khiển CT 02',14],['Chẩn đoán hình ảnh','P. X-quang 01',20],['Chẩn đoán hình ảnh','P. X-quang 02',20],['Chẩn đoán hình ảnh','P. X-quang 03',19],['Chẩn đoán hình ảnh','P. Điều khiển X-quang',23],['Chẩn đoán hình ảnh','P. Đo mật độ xương',19],['Chẩn đoán hình ảnh','P. Chụp nhũ ảnh',19],['Chẩn đoán hình ảnh','P. Siêu âm 01',14],['Chẩn đoán hình ảnh','P. Siêu âm 02',13],['Chẩn đoán hình ảnh','P. Siêu âm 03',13],['Chẩn đoán hình ảnh','P. Hành chính khoa CĐHA',31],['Chẩn đoán hình ảnh','P. Trực bác sĩ nữ',16],['Chẩn đoán hình ảnh','P. Trực bác sĩ nam',13],
+ ['Hành chính','P. Họp giao ban',65],['Hành chính','P. Trưởng khoa',23],
+ ['Kỹ thuật, phụ trợ','P. Máy bơm PCCC',16],['Kỹ thuật, phụ trợ','P. Tủ điện tổng',13],['Kỹ thuật, phụ trợ','Phòng trực PCCC',6],['Kỹ thuật, phụ trợ','Kho đồ không cháy',8],['Kỹ thuật, phụ trợ','Buồng thang bộ 01',20],['Kỹ thuật, phụ trợ','Buồng thang bộ 03',26],['Kỹ thuật, phụ trợ','WC khách nữ',10],['Kỹ thuật, phụ trợ','WC khách nam',10],['Kỹ thuật, phụ trợ','WC khuyết tật',4]];
+const rcats=['Tất cả','Khám bệnh','Chẩn đoán hình ảnh','Hành chính','Kỹ thuật, phụ trợ'];let rcat='Tất cả';
+function renderRooms(){$('#rmSeg').innerHTML=rcats.map(c=>`<button aria-pressed="${c===rcat}" data-c="${c}">${c}</button>`).join('');
+ const L=rooms.filter(r=>rcat==='Tất cả'||r[0]===rcat).sort((a,b)=>b[2]-a[2]);
+ $('#rooms').innerHTML=L.map(r=>`<tr><td>${r[1]}<span class="bar" style="width:${r[2]/65*100}%"></span></td><td class="r num">${r[2]} m²</td></tr>`).join('');
+ $('#rsum').textContent=`${L.length} phòng · cộng ${fmt(L.reduce((s,r)=>s+r[2],0))} m². Toàn tầng: 62 nhãn diện tích, 1.013 m².`}
+$('#rmSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;rcat=b.dataset.c;renderRooms()});renderRooms();
+let rmK='a';const rmImgs={a:[IMG.p2kb,'Trích mặt bằng nội thất, khu khoa khám bệnh.'],b:[IMG.p2cdha,'Trích mặt bằng nội thất, khu chẩn đoán hình ảnh.']};
+function setRm(k){rmK=k;$('#rmA').setAttribute('aria-pressed',k==='a');$('#rmB').setAttribute('aria-pressed',k==='b');$('#rmImg').src=rmImgs[k][0];$('#rmImg').alt=rmImgs[k][1];$('#rmCap').innerHTML='<b>Hình 2.</b> '+rmImgs[k][1];rcat=k==='a'?'Khám bệnh':'Chẩn đoán hình ảnh';renderRooms()}
+$('#rmA').onclick=()=>setRm('a');$('#rmB').onclick=()=>setRm('b');
+$('#rmPic').onclick=e=>openLb(rmImgs[rmK][0],'Hình 2. '+rmImgs[rmK][1]+' Trang 2.',e.currentTarget);
+
+/* 05.5 doors */
+const dcats={all:'Tất cả',di:'Cửa đi',so:'Cửa sổ',cc:'Chống cháy',chi:'Cửa chì',bad:'Chênh lệch'};let dcat='all';
+const isCC=d=>/cháy/i.test(d[6]),isChi=d=>/chì/i.test(d[6]);
+function renderDoors(){const q=($('#dq').value||'').trim().toUpperCase();
+ $('#dSeg').innerHTML=Object.entries(dcats).map(([k,v])=>`<button aria-pressed="${k===dcat}" data-k="${k}">${v}</button>`).join('');
+ const L=DOORS.filter(d=>(dcat==='all'||(dcat==='di'&&d[1]==='Cửa đi')||(dcat==='so'&&d[1]==='Cửa sổ')||(dcat==='cc'&&isCC(d))||(dcat==='chi'&&isChi(d))||(dcat==='bad'&&d[4]!==d[5]))&&(!q||d[0].toUpperCase().includes(q)));
+ $('#doors').innerHTML=L.length?L.map(d=>{const bad=d[4]!==d[5];return `<tr class="${bad?'flag':''}"><td class="k">${d[0]}</td><td class="t">${d[1]}</td><td class="num">${d[2]} × ${d[3]}</td><td class="t">${d[6]}</td><td class="r num">${d[4]}</td><td class="r num">${d[5]}</td><td><span class="tag ${bad?'fl':'ok'}">${bad?'Chênh lệch':'Khớp'}</span></td></tr>`}).join(''):'<tr><td colspan="7" class="t">Không có mã nào phù hợp bộ lọc.</td></tr>'}
+$('#dSeg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;dcat=b.dataset.k;renderDoors()});
+$('#dq').addEventListener('input',renderDoors);renderDoors();
+$('#pdfSrc').onclick=e=>openLb(IMG.p25,'Bảng thống kê cửa đi, bản gốc trang 25.',e.currentTarget);
+
+/* 05.6 discrepancies */
+const lech=[['ĐV5',2,1,'Cửa 2 cánh trong ô 1.400, trên mặt bằng đặt 1 ký hiệu; bảng đếm 2 cánh 700 (Hình 3).','Không phải lỗi',0],
+ ['SKT2',4,3,'Ô kỹ thuật cạnh phòng cấp phát thuốc, phòng đăng ký (Hình 4).','Hỏi đơn vị thiết kế',1],
+ ['S2',18,17,'Cửa sổ 2 cánh trượt 1.200 × 1.300; 17 vị trí có ký hiệu trên mặt bằng.','Hỏi đơn vị thiết kế',1],
+ ['SLS1',4,3,'Cửa sổ lá sách 2.400 × 600 ở mặt ngoài.','Đối chiếu mặt đứng, hỏi thiết kế',1]];
+$('#lech').innerHTML=lech.map(l=>`<tr><td class="k">${l[0]}</td><td class="r num">${l[1]}</td><td class="r num">${l[2]}</td><td class="t">${l[3]}</td><td><span class="tag ${l[5]?'fl':'ok'}">${l[4]}</span></td></tr>`).join('');
+
+/* 05.7 FAQ */
+const qa=[['Tầng 1 có bao nhiêu phòng khám?','8 phòng khám, đánh số P.Khám 01 đến 08. Mỗi phòng 13–14 m², có lavabo riêng, nằm dọc hành lang nội bộ khoa khám bệnh.',['Trang 2']],
+ ['Cửa chống cháy tầng 1 gồm những gì?','13 bộ cửa đi chống cháy 60 phút: ĐCC1 ×5, ĐCC2 ×2, ĐCC4 ×1, ĐCC5 ×1, ĐCC6 ×2, ĐCC8 ×2.\nNgoài ra có 3 rèm ngăn cháy EI60 (MSCC1 ×2, MSCC2 ×1), cửa sổ chống cháy SCC1, 3 cửa kỹ thuật SKTCC và 1 SWCC.',['Trang 25','Trang 9']],
+ ['Cửa chì dùng ở đâu, bao nhiêu bộ?','15 bộ cửa đi chì: ĐC1 ×7 (1.600 × 2.400), ĐC2 ×2, ĐC3 ×6, và 7 cửa sổ chì (S-C1 ×5, S-C2 ×2). Tập trung ở khoa chẩn đoán hình ảnh: X-quang, CT, chụp nhũ ảnh, đo mật độ xương.',['Trang 25','Trang 9']],
+ ['Cửa Đ1 có quy cách thế nào?','1.400 × 2.200 mm, 2 cánh mở, tương đương nhôm Xingfa, kính trắng cường lực dày 8 mm. Tầng 1 có 21 bộ, mặt bằng đếm đủ 21. Cả công trình có 48 bộ.',['Trang 25','Trang 21']],
+ ['Phòng MRI có lưu ý gì?','P. Máy MRI 38 m², đi kèm P. Điều khiển MRI 22 m² và P. Máy kỹ thuật MRI 9 m². Ghi chú trên bản vẽ: tường phía sảnh chờ hoàn thiện sau khi đưa máy MRI vào. Cửa ĐRF và cửa sổ SRF là loại riêng cho phòng MRI, xem chi tiết.',['Trang 2','Trang 25']],
+ ['Kích thước tổng của tầng 1 là bao nhiêu?','87,72 m theo trục A đến N và 44,05 m theo trục 1 đến 13. Cả 3 chuỗi kích thước cộng lại đều khớp số tổng. Cao độ ±0.000 tương đương +4,20 m hệ VN2000.',['Trang 9']]];
+$('#faq').innerHTML=qa.map((q,i)=>`<details ${i===0?'open':''}><summary>${q[0]}${ic('plus')}</summary><div class="a">${q[1]}<div class="src">${q[2].map(s=>`<span>${s}</span>`).join('')}</div></div></details>`).join('');
+
+/* 00 hướng dẫn */
+$('#cpLoiDan').dataset.c=encodeURIComponent($('#loiDan').textContent);
+const gt=$$('#gtabs [role="tab"]');
+function selG(i,f){gt.forEach((b,k)=>{b.setAttribute('aria-selected',k===i);b.tabIndex=k===i?0:-1;$('#gp'+k).hidden=k!==i});if(f)gt[i].focus()}
+$('#gtabs').addEventListener('click',e=>{const b=e.target.closest('[role="tab"]');if(b)selG(gt.indexOf(b))});
+$('#gtabs').addEventListener('keydown',e=>{const i=gt.findIndex(b=>b.getAttribute('aria-selected')==='true');if(e.key==='ArrowRight')selG((i+1)%gt.length,1);if(e.key==='ArrowLeft')selG((i+gt.length-1)%gt.length,1)});
+selG(0);
+</script>
+
+</body></html>

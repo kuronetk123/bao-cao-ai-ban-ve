@@ -1,0 +1,477 @@
+<!doctype html><html lang="vi"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tạo tài khoản Autodesk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Hướng dẫn tạo tài khoản Autodesk bằng email của chính mình để dùng AutoCAD, Revit.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Bố cục: cùng mẫu "Báo cáo AI bản vẽ" — trang cuộn dọc, cột trái là số mục, cột phải là nội dung. Màu trung tính, nhấn xanh than, vàng đất cho lưu ý. */
+:root{
+ --bg:#F6F5F2;--surface:#FFFFFF;--ink:#15191F;--ink-2:#3A4250;--muted:#68707D;--line:#E1DFD9;--line-2:#ECEAE5;
+ --accent:#1F3A5F;--accent-soft:#E9EEF5;--flag:#94570F;--flag-soft:#F5EDDF;--ok:#2B6A4D;--ok-soft:#E4EFE8;
+ --code:#1B1F26;--code-ink:#DCE1E8;--code-btn:#2A3039;--code-line:#3A414C;
+ --f:'Be Vietnam Pro',system-ui,sans-serif;--m:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+ --bg:#0F1216;--surface:#161A20;--ink:#E7E9EC;--ink-2:#C2C7CF;--muted:#9099A6;--line:#2A2F37;--line-2:#22272E;
+ --accent:#93B2DA;--accent-soft:#1A2433;--flag:#E2A65C;--flag-soft:#2C2317;--ok:#7DC3A1;--ok-soft:#15261E;--code:#0B0D10;color-scheme:dark}}
+:root[data-theme="dark"]{
+ --bg:#0F1216;--surface:#161A20;--ink:#E7E9EC;--ink-2:#C2C7CF;--muted:#9099A6;--line:#2A2F37;--line-2:#22272E;
+ --accent:#93B2DA;--accent-soft:#1A2433;--flag:#E2A65C;--flag-soft:#2C2317;--ok:#7DC3A1;--ok-soft:#15261E;--code:#0B0D10;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--f);-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
+h1,h2,h3,h4{margin:0;line-height:1.25;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+p{margin:0}
+a{color:var(--accent)}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+.ic{width:18px;height:18px;flex:none;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.skip{position:absolute;left:16px;top:-60px;z-index:60;background:var(--accent);color:var(--bg);padding:10px 14px;border-radius:6px;text-decoration:none}
+.skip:focus{top:10px}
+
+.hd{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.2) blur(10px);-webkit-backdrop-filter:saturate(1.2) blur(10px);border-bottom:1px solid var(--line)}
+.hd .w{display:flex;align-items:center;gap:24px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:600;white-space:nowrap}
+.brand i{width:26px;height:26px;border-radius:5px;background:var(--accent);display:grid;place-items:center;color:var(--bg)}
+.brand i .ic{width:15px;height:15px}
+.brand span{font-size:.95rem}
+.nav{display:flex;gap:2px;margin-left:auto;overflow-x:auto;scrollbar-width:none}
+.nav a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;padding:10px 10px;min-height:44px;display:inline-flex;align-items:center;gap:6px;border-radius:6px;white-space:nowrap}
+.nav a small{font:500 .72rem var(--m);color:var(--muted)}
+.nav a:hover{color:var(--ink);background:var(--line-2)}
+.nav a[aria-current="true"]{color:var(--ink);box-shadow:inset 0 -2px 0 var(--accent);border-radius:0}
+@media (max-width:820px){.nav a span{display:none}.brand span{display:none}}
+
+.w{width:100%;max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+@media (min-width:700px){.w{padding-left:max(32px,env(safe-area-inset-left,0px));padding-right:max(32px,env(safe-area-inset-right,0px))}}
+
+.hero{padding-block:72px 56px;border-bottom:1px solid var(--line)}
+.kick{font:500 .76rem/1 var(--m);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-size:clamp(2rem,4.2vw,3.1rem);max-width:22ch;margin-top:16px;letter-spacing:-.02em}
+.lede{font-size:clamp(1.05rem,1.4vw,1.2rem);color:var(--ink-2);max-width:62ch;margin-top:20px}
+.hero .go{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-weight:500;color:var(--accent);text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:6px;padding:10px 14px;min-height:44px}
+.hero .go:hover{border-color:var(--accent)}
+.meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:28px;font-size:.88rem;color:var(--muted)}
+.meta b{display:block;color:var(--ink);font-weight:600;font-size:.92rem}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:40px}
+.summary div{border-top:2px solid var(--ink);padding-top:14px}
+.summary h3{font-size:1rem}
+.summary p{font-size:.93rem;color:var(--ink-2);margin-top:6px}
+@media (max-width:820px){.summary{grid-template-columns:1fr;gap:20px}}
+
+.sec{padding-block:72px;border-bottom:1px solid var(--line)}
+.sec>.w{display:grid;grid-template-columns:220px minmax(0,1fr);gap:48px}
+@media (max-width:960px){.sec>.w{grid-template-columns:1fr;gap:20px}.sec{padding-block:52px}}
+.side{position:sticky;top:96px;align-self:start}
+@media (max-width:960px){.side{position:static}}
+.side .n{font:500 .8rem var(--m);color:var(--muted);letter-spacing:.08em}
+.side h2{font-size:1.45rem;margin-top:8px}
+.side p{font-size:.88rem;color:var(--muted);margin-top:10px}
+.body{display:flex;flex-direction:column;gap:40px;min-width:0}
+.sub{min-width:0}
+.sub h3{font-size:1.15rem}
+.sub>p.d{color:var(--ink-2);margin-top:8px;max-width:70ch}
+.sub>*+*{margin-top:18px}
+.sub .h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.sub .h span{font:500 .78rem var(--m);color:var(--muted)}
+.note{font-size:.82rem;color:var(--muted)}
+
+.reasons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.reasons div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px}
+.reasons .ic{width:22px;height:22px;color:var(--accent)}
+.reasons h4{font-size:1rem;margin-top:12px}
+.reasons p{font-size:.9rem;color:var(--ink-2);margin-top:6px}
+@media (max-width:820px){.reasons{grid-template-columns:1fr}}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:14px 18px;border-radius:0 6px 6px 0;font-size:.95rem;color:var(--ink)}
+.callout.fl{border-color:var(--flag);background:var(--flag-soft)}
+
+.diag{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch}
+.diag .bx{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:6px}
+.diag .bx.main{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.diag .bx .ic{width:22px;height:22px;color:var(--accent)}
+.diag .bx h4{font-size:.98rem;margin-top:6px}
+.diag .bx p{font-size:.86rem;color:var(--muted)}
+.diag .ar{display:grid;place-items:center;padding:0 10px;color:var(--muted)}
+@media (max-width:760px){.diag{grid-template-columns:1fr}.diag .ar{padding:6px 0;transform:rotate(90deg)}}
+
+.tabs{display:flex;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{border:0;background:none;padding:12px 16px;min-height:44px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.olist{list-style:none;margin:0;padding:0;counter-reset:s}
+.olist li{counter-increment:s;display:grid;grid-template-columns:32px minmax(0,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+.olist li:last-child{border-bottom:0}
+.olist li::before{content:counter(s);width:26px;height:26px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font:500 .78rem var(--m);color:var(--muted);margin-top:1px}
+.olist b{font-weight:600}
+.olist p{font-size:.9rem;color:var(--ink-2)}
+.olist.check li::before{content:"";background:var(--surface)}
+
+.code{display:flex;gap:10px;align-items:center;background:var(--code);border-radius:6px;padding:8px 8px 8px 14px;margin-top:8px;min-width:0}
+.code pre{margin:0;flex:1;min-width:0;overflow-x:auto;font:400 .82rem/1.6 var(--m);color:var(--code-ink);white-space:pre}
+.copy{background:var(--code-btn);border:1px solid var(--code-line);color:var(--code-ink);font:500 .75rem var(--m);padding:6px 10px;min-height:36px;min-width:76px;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;gap:6px;flex:none}
+.copy.done{background:#2B6A4D;border-color:#2B6A4D;color:#fff}
+.copy .ic{width:14px;height:14px}
+
+.gp{display:flex;flex-direction:column;margin-top:4px}
+.gp>p.d{color:var(--ink-2);padding:18px 0 4px;max-width:70ch}
+.gstep{padding:22px 0;border-bottom:1px solid var(--line-2)}
+.gstep:last-child{border-bottom:0;padding-bottom:0}
+.gh{display:flex;align-items:baseline;gap:12px;font-weight:600;font-size:1.02rem;margin-bottom:14px;flex-wrap:wrap}
+.gh span{font:500 .74rem var(--m);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);background:var(--accent-soft);padding:3px 8px;border-radius:4px}
+.gh em{font-style:normal;font-weight:400;font-size:.86rem;color:var(--muted)}
+.gprep{font-size:.92rem;color:var(--ink-2);margin-bottom:16px;max-width:75ch}
+.gprep b{color:var(--ink)}
+.gcols{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.gcols>div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+.gcols h4{font-size:.94rem;margin-bottom:8px}
+.glist{margin:0;padding-left:20px;font-size:.9rem;color:var(--ink-2);display:flex;flex-direction:column;gap:5px}
+.glist b{color:var(--ink);font-weight:600}
+code{font:500 .84rem var(--m);background:var(--line-2);color:var(--ink);padding:1px 6px;border-radius:4px;overflow-wrap:anywhere}
+.gthree{list-style:none;margin:0 0 16px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line);border-radius:8px;background:var(--surface);counter-reset:g}
+.gthree li{counter-increment:g;padding:16px 18px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:4px;min-width:0}
+.gthree li:first-child{border-left:0}
+.gthree li::before{content:counter(g);font:600 1.3rem/1 var(--f);color:var(--accent);margin-bottom:6px}
+.gthree b{font-weight:600}
+.gthree span{font-size:.88rem;color:var(--ink-2)}
+@media (max-width:700px){.gthree{grid-template-columns:1fr}.gthree li{border-left:0;border-top:1px solid var(--line)}.gthree li:first-child{border-top:0}}
+.gnote{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:.92rem;color:var(--ink-2)}
+.gnote b{color:var(--ink)}
+.gnote.boxed{background:var(--flag-soft);border-radius:8px;padding:16px 16px 16px 34px}
+
+.faq{border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.faq details{border-bottom:1px solid var(--line-2)}
+.faq details:last-child{border-bottom:0}
+.faq summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;justify-content:space-between;gap:16px;font-weight:600;min-height:44px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .ic{transition:transform .2s;color:var(--muted)}
+.faq details[open] summary .ic{transform:rotate(45deg)}
+.faq .a{padding:0 18px 18px;color:var(--ink-2);max-width:72ch}
+.faq .a p+p{margin-top:8px}
+
+.ft{padding-block:40px 56px;color:var(--muted);font-size:.84rem}
+.ft .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+.jform{display:flex;flex-direction:column;gap:14px;margin-top:4px}
+.jgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:700px){.jgrid{grid-template-columns:1fr}}
+.jform label.jf{display:flex;flex-direction:column;gap:6px;font-size:.88rem;font-weight:600}
+.jform input[type="text"],.jform input[type="email"],.jform textarea{font:400 .95rem/1.5 var(--f);color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px;width:100%}
+.jform input[type="text"],.jform input[type="email"]{min-height:44px}
+.jform textarea{font-family:var(--m);font-size:.82rem;min-height:148px;resize:vertical}
+.jdrop{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;border:1px dashed var(--line);border-radius:8px;background:var(--surface);padding:22px 16px;text-align:center;cursor:pointer}
+.jdrop input{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.jdrop.over{border-color:var(--accent);background:var(--accent-soft)}
+.jdrop b{font-weight:600}
+.jdrop small{color:var(--muted);font-weight:400}
+.jrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.jbtn{background:var(--accent);color:var(--bg);border:0;border-radius:6px;padding:10px 16px;min-height:44px;font-weight:600}
+.jbtn:disabled{opacity:.55;cursor:wait}
+.jstat{font-size:.9rem;color:var(--ink-2);margin:0}
+.jstat.ok{color:var(--ok)}
+.jstat.bad{color:var(--flag)}
+.jtable{width:100%;border-collapse:collapse;font-size:.9rem}
+.jtable th,.jtable td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line-2);vertical-align:top}
+.jtable th{font:500 .75rem var(--m);letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.jops{display:flex;gap:8px;flex-wrap:wrap}
+.jops button{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:6px 10px;min-height:36px;font-size:.82rem}
+.jraw{margin:8px 0 0;background:var(--code);color:var(--code-ink);border-radius:6px;padding:12px 14px;overflow:auto;font:400 .78rem/1.55 var(--m);white-space:pre-wrap;max-height:280px}
+.jempty{font-size:.92rem;color:var(--muted)}
+.jhead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:8px}
+.jhead h4{font-size:1rem}
+</style>
+
+<a class="skip" href="#main">Bỏ qua, tới nội dung</a>
+<header class="hd"><div class="w">
+ <a class="brand" href="#top"><i><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></i><span>Hướng dẫn · Tài khoản Autodesk</span></a>
+ <nav class="nav" aria-label="Mục lục">
+  <a href="#s1"><small>01</small><span>Vì sao</span></a><a href="#s2"><small>02</small><span>Chuẩn bị</span></a><a href="#s3"><small>03</small><span>Tạo tài khoản</span></a><a href="#s4"><small>04</small><span>Sau khi tạo</span></a><a href="#s5"><small>05</small><span>Lỗi thường gặp</span></a>
+ </nav>
+</div></header>
+
+<main id="main">
+<section class="hero" id="top"><div class="w">
+ <p class="kick">Hướng dẫn · 26/11/2026</p>
+ <h1>Tạo tài khoản Autodesk bằng email của chính mình</h1>
+ <p class="lede">Mỗi người dùng AutoCAD, Revit cần một tài khoản Autodesk riêng, đăng ký bằng email mình tự mở được. Trang này đi từ chuẩn bị, đăng ký, xác minh email đến đăng nhập vào phần mềm.</p>
+ <a class="go" href="#s3"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Tới thẳng các bước tạo tài khoản</a>
+ <div class="meta"><div><b>Thời gian</b>Khoảng 5 phút</div><div><b>Cần có</b>Email cá nhân, mở được hộp thư</div><div><b>Dùng cho</b>AutoCAD, Revit, các phần mềm Autodesk</div></div>
+ <div class="summary">
+  <div><h3>Một người, một tài khoản</h3><p>Không dùng chung tài khoản hay email của đồng nghiệp. Bản quyền được cấp theo từng email.</p></div>
+  <div><h3>Email phải mở được</h3><p>Mã xác minh và thư đặt lại mật khẩu đều gửi về email này. Mất hộp thư là mất tài khoản.</p></div>
+  <div><h3>Tạo xong, báo quản trị viên</h3><p>Gửi email đã đăng ký cho người quản lý bản quyền để được gán AutoCAD, Revit.</p></div>
+ </div>
+</div></section>
+
+<!-- 01 -->
+<section class="sec" id="s1"><div class="w">
+ <div class="side"><p class="n">01</p><h2>Vì sao dùng email của mình</h2><p>Tài khoản là danh tính của bạn trong mọi phần mềm Autodesk.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>Ba lý do không dùng chung tài khoản</h3>
+   <div class="reasons">
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><h4>Tự khôi phục được</h4><p>Quên mật khẩu hay đổi máy, bạn tự nhận mã qua email, không phải đi hỏi người khác.</p></div>
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg><h4>Bản quyền đúng người</h4><p>Quản trị viên gán license cho từng email. Dùng chung dễ bị khóa hoặc tranh nhau phiên đăng nhập.</p></div>
+    <div><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h18v18H3zM3 9h18M9 21V9"/></svg><h4>Lịch sử bản vẽ rõ ràng</h4><p>Ai mở, ai lưu, ai đồng bộ mô hình đều gắn đúng tên người làm.</p></div>
+   </div>
+  </div>
+ </div>
+</div></section>
+
+<!-- 02 -->
+<section class="sec" id="s2"><div class="w">
+ <div class="side"><p class="n">02</p><h2>Chuẩn bị</h2><p>Kiểm tra bốn việc trước khi bắt đầu.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>Danh sách chuẩn bị</h3>
+   <ol class="olist">
+    <li><div><b>Email của bạn, đang mở được hộp thư</b><p>Ưu tiên email công ty nếu bản quyền do công ty cấp. Dùng email cá nhân nếu công ty không yêu cầu.</p></div></li>
+    <li><div><b>Họ và tên thật</b><p>Không chứa chữ số. Autodesk từ chối tên có số.</p></div></li>
+    <li><div><b>Một mật khẩu mạnh</b><p>Không dùng lại mật khẩu email. Nên dùng trình quản lý mật khẩu.</p></div></li>
+    <li><div><b>Cho phép thư từ Autodesk</b><p>Nhờ bộ phận IT cho phép hai địa chỉ dưới đây để mã xác minh không bị chặn.</p>
+     <div class="code"><pre>noreply@signin.autodesk.com</pre><button class="copy" data-c="noreply@signin.autodesk.com"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+     <div class="code"><pre>noreply@autodesk.com</pre><button class="copy" data-c="noreply@autodesk.com"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    </div></li>
+   </ol>
+   <p class="callout fl">Đã từng có tài khoản Autodesk với email này thì <b>đừng tạo mới</b>. Đăng nhập, hoặc bấm <b>Forgot password?</b> để đặt lại mật khẩu.</p>
+  </div>
+ </div>
+</div></section>
+
+<!-- 03 -->
+<section class="sec" id="s3"><div class="w">
+ <div class="side"><p class="n">03</p><h2>Tạo tài khoản</h2><p>Nhập email trước, lấy mã trong email, rồi điền tên và mật khẩu. Bước 4 gửi file JSON vào database.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>Cách hoạt động</h3>
+   <div class="diag">
+    <div class="bx"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg><h4>1 · Nhập email</h4><p>Email của bạn, chưa từng dùng cho tài khoản Autodesk nào.</p></div>
+    <div class="ar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="bx main"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 6l8 7 8-7"/></svg><h4>2 · Lấy mã trong email</h4><p>Mở hộp thư, lấy mã xác minh, nhập vào trang Autodesk.</p></div>
+    <div class="ar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+    <div class="bx"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg><h4>3 · Điền thông tin</h4><p>First name, Last name, mật khẩu. Bấm Create account là xong.</p></div>
+   </div>
+  </div>
+
+  <div class="sub" id="cac-buoc">
+   <div class="h"><h3>Các bước tạo tài khoản</h3><span>Chọn cách bạn bắt đầu</span></div>
+   <div class="tabs" role="tablist" id="gtabs" aria-label="Cách tạo">
+    <button role="tab" id="gt0" aria-controls="gp0" aria-selected="true">Trên trình duyệt · khuyến nghị</button><button role="tab" id="gt1" aria-controls="gp1" aria-selected="false" tabindex="-1">Từ AutoCAD, Revit</button><button role="tab" id="gt2" aria-controls="gp2" aria-selected="false" tabindex="-1">Google, Microsoft, Apple</button>
+   </div>
+
+   <div class="gp" id="gp0" role="tabpanel" aria-labelledby="gt0">
+    <div class="gstep"><p class="gh"><span>Bước 1</span>Nhập email chưa dùng cho Autodesk <em>chỉ làm một lần</em></p>
+     <ol class="glist"><li>Mở <a href="https://accounts.autodesk.com" target="_blank" rel="noopener">accounts.autodesk.com</a>, bấm <b>Create account</b>.</li><li>Nhập <b>email của bạn</b>, email này chưa từng đăng ký tài khoản Autodesk.</li><li>Bấm <b>Next</b>. Autodesk gửi mã xác minh về email đó.</li></ol>
+    </div>
+    <div class="gstep"><p class="gh"><span>Bước 2</span>Vào email lấy mã</p>
+     <div class="gcols">
+      <div><h4>Nhận mã</h4><ol class="glist"><li>Mở hộp thư của email vừa nhập.</li><li>Tìm thư từ Autodesk, xem cả mục <b>Spam / Junk</b>.</li></ol></div>
+      <div><h4>Nhập mã</h4><ol class="glist"><li>Gõ <b>mã xác minh (OTP)</b> vào ô trên trang Autodesk.</li><li>Bấm <b>Next</b> để sang phần điền thông tin.</li></ol></div>
+      <div><h4>Không thấy thư</h4><ol class="glist"><li>Bấm <b>Resend</b> để gửi lại mã.</li><li>Xem lại <a href="#s5">lỗi thường gặp</a>.</li></ol></div>
+     </div>
+    </div>
+    <div class="gstep"><p class="gh"><span>Bước 3</span>Điền tên và mật khẩu</p>
+     <ol class="glist"><li>Nhập <b>First name</b> (tên) và <b>Last name</b> (họ), không có chữ số.</li><li>Nhập <b>Password</b>.</li><li>Đánh dấu đồng ý điều khoản, bấm <b>Create account</b>. Tài khoản đã sẵn sàng.</li></ol>
+    </div>
+   </div>
+
+   <div class="gp" id="gp1" role="tabpanel" aria-labelledby="gt1" hidden>
+    <p class="d">Dùng khi mở AutoCAD, Revit lần đầu trên máy mới. Các bước đăng ký giống trên trình duyệt.</p>
+    <div class="gstep"><p class="gh"><span>Bước 1</span>Mở màn hình đăng nhập</p>
+     <ol class="glist"><li>Mở AutoCAD hoặc Revit. Màn hình <b>Let's Get Started</b> hiện ra.</li><li>Chọn <b>Sign in with your Autodesk ID</b>.</li><li>Bấm <b>Create account</b> trên trang đăng nhập.</li></ol>
+    </div>
+    <div class="gstep"><p class="gh"><span>Bước 2</span>Đăng ký và xác minh</p>
+     <ol class="glist"><li>Nhập email của bạn, chưa từng dùng cho Autodesk, bấm <b>Next</b>.</li><li>Vào email lấy mã xác minh, nhập vào trang. Bản phần mềm trước 2023 có thể gửi <b>đường link</b> thay vì mã: bấm vào link.</li><li>Điền First name, Last name (không có số), Password, bấm <b>Create account</b>.</li><li>Quay lại phần mềm, đăng nhập bằng email vừa tạo.</li></ol>
+    </div>
+    <div class="gstep"><p class="gh"><span>Lưu ý</span>Máy đang đăng nhập tài khoản người khác</p>
+     <ul class="gnote boxed"><li>Bấm tên người dùng ở góc trên bên phải phần mềm → <b>Sign Out</b>.</li><li>Đóng và mở lại phần mềm, rồi đăng nhập bằng tài khoản của bạn.</li></ul>
+    </div>
+   </div>
+
+   <div class="gp" id="gp2" role="tabpanel" aria-labelledby="gt2" hidden>
+    <p class="d">Nếu email của bạn là Gmail, Outlook hoặc Apple ID, có thể tạo tài khoản bằng một cú bấm, không cần đặt mật khẩu riêng.</p>
+    <div class="gstep"><p class="gh"><span>Bước 1</span>Chọn nhà cung cấp</p>
+     <ol class="glist"><li>Mở <a href="https://accounts.autodesk.com" target="_blank" rel="noopener">accounts.autodesk.com</a>.</li><li>Bấm <b>Sign in with Google</b>, <b>Microsoft</b> hoặc <b>Apple</b>.</li><li>Đăng nhập bằng tài khoản của chính bạn. Autodesk tự tạo tài khoản theo email đó.</li></ol>
+    </div>
+    <div class="gstep"><p class="gh"><span>Lưu ý</span>Khi dùng đăng nhập nhanh</p>
+     <ul class="gnote"><li>Lần sau phải đăng nhập đúng cách đó. Gõ email và mật khẩu sẽ không vào được.</li><li>Bản quyền công ty thường gán theo email công ty: chỉ dùng cách này khi email Google, Microsoft của bạn chính là email đó.</li><li>Xong vẫn cần làm <a href="#buoc-4">Bước 4, gửi file JSON</a>.</li></ul>
+    </div>
+   </div>
+
+   <div class="gstep" id="buoc-4">
+    <p class="gh"><span>Bước 4</span>Gửi file JSON</p>
+    <p class="gprep"><b>Gửi email đã đăng ký</b> cho người quản lý bản quyền trong công ty, kèm phần mềm cần dùng (ví dụ AutoCAD 2025, Revit 2024). Khi được gán, Autodesk gửi thư mời về email của bạn.</p>
+    <p class="gprep">Muốn lưu hồ sơ, gửi một file <b>JSON</b>. Nội dung được giữ nguyên trong database Supabase.</p>
+    <div class="code"><pre>{
+  "email": "ban@congty.com",
+  "ho_ten": "Nguyen Van A",
+  "phan_mem": ["AutoCAD 2025", "Revit 2024"]
+}</pre><button class="copy" type="button" data-c='{"email":"ban@congty.com","ho_ten":"Nguyen Van A","phan_mem":["AutoCAD 2025","Revit 2024"]}'><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button></div>
+    <p class="callout fl" id="joff" hidden>Chưa kết nối được database Supabase. Kiểm tra mạng rồi tải lại trang.</p>
+    <form class="jform" id="jform">
+     <div class="jgrid">
+      <label class="jf">Người gửi<input type="text" name="sender" autocomplete="name" maxlength="200" placeholder="Nguyễn Văn A"></label>
+      <label class="jf">Email Autodesk<input type="email" name="email" autocomplete="email" maxlength="200" placeholder="ban@congty.com"></label>
+     </div>
+     <label class="jdrop" id="jdrop">
+      <input type="file" name="file" id="jfile" accept=".json,application/json">
+      <b>Chọn file JSON</b>
+      <small id="jfname">hoặc kéo thả file vào đây. Chỉ nhận đuôi .json</small>
+     </label>
+     <label class="jf">Hoặc dán JSON<textarea name="body" id="jbody" spellcheck="false" placeholder='{"email":"ban@congty.com","phan_mem":["AutoCAD"]}'></textarea></label>
+     <div class="jrow">
+      <button class="jbtn" type="submit" id="jbtn">Gửi vào database</button>
+      <p class="jstat" id="jstat" role="status"></p>
+     </div>
+    </form>
+    <div class="jhead"><h4>File đã lưu</h4><span class="note" id="jcount"></span></div>
+    <div id="jlist"><p class="jempty">Đang tải danh sách…</p></div>
+   </div>
+  </div>
+ </div>
+</div></section>
+
+<!-- 04 -->
+<section class="sec" id="s4"><div class="w">
+ <div class="side"><p class="n">04</p><h2>Sau khi tạo</h2><p>Bảo vệ tài khoản và bắt đầu dùng phần mềm.</p></div>
+ <div class="body">
+  <div class="sub">
+   <h3>Ba việc làm ngay</h3>
+   <ol class="gthree"><li><b>Bật xác minh 2 bước</b><span>Vào <a href="https://profile.autodesk.com" target="_blank" rel="noopener">profile.autodesk.com</a> → Security settings, bật 2-step verification hoặc tạo passkey.</span></li><li><b>Đăng nhập phần mềm</b><span>Mở AutoCAD, Revit → Sign in with your Autodesk ID → nhập email vừa tạo.</span></li><li><b>Kiểm tra bản quyền</b><span>Vào <a href="https://manage.autodesk.com" target="_blank" rel="noopener">manage.autodesk.com</a> → Products and Services, xem phần mềm đã được gán.</span></li></ol>
+   <p class="callout">Không chia sẻ mật khẩu hay mã xác minh cho ai, kể cả đồng nghiệp. Cần thêm người dùng thì mỗi người tự tạo tài khoản và nhờ quản trị viên gán bản quyền.</p>
+  </div>
+ </div>
+</div></section>
+
+<!-- 05 -->
+<section class="sec" id="s5"><div class="w">
+ <div class="side"><p class="n">05</p><h2>Lỗi thường gặp</h2><p>Bấm vào từng lỗi để xem cách xử lý.</p></div>
+ <div class="body">
+  <div class="sub">
+   <div class="faq">
+    <details open><summary>Không nhận được mã xác minh<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><div class="a"><p>Xem mục Spam / Junk. Bấm <b>Resend</b> trên màn hình xác minh.</p><p>Vẫn không có: nhờ IT cho phép noreply@signin.autodesk.com và noreply@autodesk.com (xem <a href="#s2">Chuẩn bị</a>).</p></div></details>
+    <details><summary>Báo “Account already exists”<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><div class="a"><p>Email này đã có tài khoản. Đăng nhập, hoặc bấm <b>Forgot password?</b> để đặt lại mật khẩu. Không tạo thêm tài khoản bằng email khác chỉ để né lỗi.</p></div></details>
+    <details><summary>Ô Họ / Tên báo lỗi<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><div class="a"><p>Xóa chữ số khỏi họ và tên. Autodesk không chấp nhận tên có số.</p></div></details>
+    <details><summary>Link xác minh không hoạt động<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><div class="a"><p>Link có thể đã cũ. Bấm <b>Resend</b> để nhận link hoặc mã mới, rồi dùng thư mới nhất.</p></div></details>
+    <details><summary>Đăng nhập được nhưng phần mềm báo không có bản quyền<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><div class="a"><p>Quản trị viên chưa gán license cho email này. Gửi email đăng ký cho họ, rồi đăng xuất và đăng nhập lại phần mềm.</p></div></details>
+    <details><summary>Lỗi khi đăng nhập SSO của công ty<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></summary><div class="a"><p>Kiểm tra đúng email gắn với tài khoản. Xóa cache trình duyệt, đóng và mở lại trình duyệt rồi thử lại.</p></div></details>
+   </div>
+   <p class="note">Vẫn không được: liên hệ hỗ trợ qua <b>Autodesk Assistant</b> ở góc dưới bên phải trang Autodesk.</p>
+  </div>
+ </div>
+</div></section>
+</main>
+
+<footer class="ft"><div class="w">
+ <span>Hướng dẫn · 26/11/2026</span>
+ <span>Nguồn: <a href="https://www.autodesk.com/support/account/manage/use/create" target="_blank" rel="noopener">Autodesk – Create an account</a> · <a href="https://www.autodesk.com/ca-en/support/account/manage/use/verify" target="_blank" rel="noopener">Autodesk – Verify your email</a></span>
+</div></footer>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const gt=$$('#gtabs [role="tab"]');
+function selG(i,focus){gt.forEach((b,j)=>{const on=i===j;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;document.getElementById(b.getAttribute('aria-controls')).hidden=!on});if(focus)gt[i].focus();try{localStorage.setItem('tabTK',i)}catch(e){}}
+$('#gtabs').addEventListener('click',e=>{const b=e.target.closest('[role="tab"]');if(b)selG(gt.indexOf(b))});
+$('#gtabs').addEventListener('keydown',e=>{const i=gt.findIndex(b=>b.getAttribute('aria-selected')==='true');if(e.key==='ArrowRight')selG((i+1)%gt.length,1);if(e.key==='ArrowLeft')selG((i+gt.length-1)%gt.length,1)});
+try{const t=+localStorage.getItem('tabTK');if(t>0&&t<gt.length)selG(t)}catch(e){}
+document.addEventListener('click',e=>{const b=e.target.closest('.copy');if(!b)return;const t=b.dataset.c;const ok=()=>{b.classList.add('done');const h=b.innerHTML;b.textContent='Đã copy';setTimeout(()=>{b.classList.remove('done');b.innerHTML=h},1500)};
+ const sel=()=>{const p=b.previousElementSibling;const r=document.createRange();r.selectNodeContents(p);const s=getSelection();s.removeAllRanges();s.addRange(r)};
+ try{navigator.clipboard.writeText(t).then(ok,sel)}catch(err){sel()}});
+const links=$$('.nav a');const io=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){links.forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')==='#'+en.target.id))}})},{rootMargin:'-40% 0px -55% 0px'});
+$$('main section[id^="s"]').forEach(s=>io.observe(s));
+
+const SB_URL='https://faclfqsypxgdgqdnjkrr.supabase.co';
+const SB_KEY='sb_publishable_qbC0E8N_CYnAtTOScFMCPQ_TtsZpFDb';
+const sbHeaders=extra=>Object.assign({apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,Accept:'application/json'},extra||{});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const kb=n=>n<1024?n+' B':(n/1024).toFixed(n<10240?1:0)+' KB';
+function when(iso){const d=new Date(iso);if(Number.isNaN(d.getTime()))return iso;return new Intl.DateTimeFormat('vi-VN',{dateStyle:'short',timeStyle:'short'}).format(d)}
+function cleanName(name){let base=String(name||'ho-so.json').split(/[/\\]/).pop().replace(/[^\w.\- ()]+/g,'_').replace(/^[._ ]+|[._ ]+$/g,'');if(!base)base='ho-so';if(!base.toLowerCase().endsWith('.json'))base+='.json';return base.slice(0,180)}
+let dbReady=false;
+function setStat(text,kind){const el=$('#jstat');el.className='jstat'+(kind?' '+kind:'');el.textContent=text}
+async function sbMessage(r,fallback){try{const d=await r.json();return d.message||d.error||fallback}catch(e){return fallback}}
+async function loadList(){
+ const box=$('#jlist');
+ try{
+  const r=await fetch(SB_URL+'/rest/v1/json_files?select=id,name,sender,email,bytes,created_at&order=created_at.desc',{headers:sbHeaders()});
+  if(!r.ok)throw new Error();
+  const items=await r.json();
+  $('#jcount').textContent=items.length?items.length+' file':'';
+  if(!items.length){box.innerHTML='<p class="jempty">Chưa có file JSON nào trong database.</p>';return}
+  box.innerHTML='<table class="jtable"><thead><tr><th>File</th><th>Người gửi</th><th>Lúc lưu</th><th></th></tr></thead><tbody>'+items.map(it=>'<tr data-id="'+esc(it.id)+'"><td><b>'+esc(it.name)+'</b><br><span class="note">'+esc(kb(it.bytes))+(it.email?' · '+esc(it.email):'')+'</span><pre class="jraw" hidden></pre></td><td>'+esc(it.sender||'—')+'</td><td>'+esc(when(it.created_at))+'</td><td><div class="jops"><button type="button" data-act="view">Xem</button><button type="button" data-act="down">Tải</button><button type="button" data-act="del">Xóa</button></div></td></tr>').join('')+'</tbody></table>';
+ }catch(e){box.innerHTML='<p class="jempty">Không đọc được danh sách file.</p>'}
+}
+async function probe(){
+ try{
+  const r=await fetch(SB_URL+'/rest/v1/json_files?select=id&limit=1',{headers:sbHeaders()});
+  dbReady=r.ok;
+ }catch(e){dbReady=false}
+ $('#joff').hidden=dbReady;
+ if(dbReady)loadList();
+ else{$('#jlist').innerHTML='<p class="jempty">Chưa kết nối được database Supabase.</p>';$('#jcount').textContent=''}
+}
+$('#jfile').addEventListener('change',()=>{const f=$('#jfile').files[0];$('#jfname').textContent=f?f.name:'hoặc kéo thả file vào đây. Chỉ nhận đuôi .json'});
+const drop=$('#jdrop');
+['dragenter','dragover'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>{const f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(!f)return;const dt=new DataTransfer();dt.items.add(f);$('#jfile').files=dt.files;$('#jfile').dispatchEvent(new Event('change'))});
+$('#jform').addEventListener('submit',async e=>{
+ e.preventDefault();
+ if(!dbReady){setStat('Chưa kết nối được database Supabase.','bad');$('#joff').hidden=false;return}
+ const fd=new FormData(e.target);
+ const file=$('#jfile').files[0];
+ const pasted=String(fd.get('body')||'').trim();
+ let name,raw;
+ if(file){
+  if(!file.name.toLowerCase().endsWith('.json')){setStat('Chỉ nhận file có đuôi .json.','bad');return}
+  raw=await file.text();name=cleanName(file.name);
+ }else if(pasted){raw=pasted;name='dan-json.json'}
+ else{setStat('Chọn một file JSON hoặc dán nội dung.','bad');return}
+ try{JSON.parse(raw)}catch(err){setStat('Nội dung không phải JSON hợp lệ.','bad');return}
+ if(new Blob([raw]).size>1048576){setStat('File lớn hơn 1 MB.','bad');return}
+ const btn=$('#jbtn');btn.disabled=true;setStat('Đang gửi…');
+ try{
+  const r=await fetch(SB_URL+'/rest/v1/json_files',{method:'POST',headers:sbHeaders({'Content-Type':'application/json',Prefer:'return=representation'}),body:JSON.stringify({name,sender:String(fd.get('sender')||'').trim(),email:String(fd.get('email')||'').trim(),bytes:new Blob([raw]).size,raw})});
+  const data=await r.json().catch(()=>[]);
+  if(!r.ok)throw new Error((data&&data.message)||'Không lưu được file.');
+  setStat('Đã lưu '+(data[0]&&data[0].name||name)+' vào database.','ok');
+  e.target.reset();
+  $('#jfname').textContent='hoặc kéo thả file vào đây. Chỉ nhận đuôi .json';
+  loadList();
+ }catch(err){setStat(err.message||'Không lưu được file.','bad')}
+ finally{btn.disabled=false}
+});
+$('#jlist').addEventListener('click',async e=>{
+ const btn=e.target.closest('button[data-act]');if(!btn)return;
+ const tr=btn.closest('tr');const id=tr.dataset.id;const act=btn.dataset.act;
+ try{
+  const one=SB_URL+'/rest/v1/json_files?id=eq.'+encodeURIComponent(id)+'&select=raw';
+  if(act==='down'||act==='view'){
+   if(act==='view'){const pre=tr.querySelector('.jraw');if(!pre.hidden){pre.hidden=true;btn.textContent='Xem';return}}
+   const r=await fetch(one,{headers:sbHeaders()});
+   const data=await r.json().catch(()=>[]);
+   if(!r.ok||!data[0])throw new Error((data&&data.message)||'Không đọc được file.');
+   if(act==='down'){
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([data[0].raw],{type:'application/json'}));
+    a.download=tr.querySelector('b').textContent||'ho-so.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    return;
+   }
+   const pre=tr.querySelector('.jraw');
+   pre.textContent=data[0].raw;pre.hidden=false;btn.textContent='Ẩn';
+   return;
+  }
+  if(!confirm('Xóa file này khỏi database?'))return;
+  const r=await fetch(SB_URL+'/rest/v1/json_files?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:sbHeaders()});
+  if(!r.ok)throw new Error(await sbMessage(r,'Không xóa được.'));
+  setStat('Đã xóa file khỏi database.','ok');
+  loadList();
+ }catch(err){setStat(err.message||'Không thực hiện được.','bad')}
+});
+probe();
+</script>
+
+</body></html>

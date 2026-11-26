@@ -149,6 +149,9 @@ code{font:500 .84rem var(--m);background:var(--line-2);color:var(--ink);padding:
 .faq .a{padding:0 18px 18px;color:var(--ink-2);max-width:72ch}
 .faq .a p+p{margin-top:8px}
 
+.clip{margin:0}
+.clip video{display:block;width:100%;max-height:70vh;height:auto;background:#111;border:1px solid var(--line);border-radius:8px}
+.clip figcaption{margin-top:8px;font-size:.86rem;color:var(--muted)}
 .ft{padding-block:40px 56px;color:var(--muted);font-size:.84rem}
 .ft .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
@@ -255,7 +258,13 @@ code{font:500 .84rem var(--m);background:var(--line-2);color:var(--ink);padding:
   </div>
 
   <div class="sub" id="cac-buoc">
-   <div class="h"><h3>Các bước tạo tài khoản</h3><span>Chọn cách bạn bắt đầu</span></div>
+   <div class="h"><h3>Các bước tạo tài khoản</h3><span>Xem video, rồi chọn cách bạn bắt đầu</span></div>
+   <figure class="clip">
+    <video controls playsinline preload="metadata" src="video.webm">
+     <a href="video.webm">Tải video hướng dẫn</a>
+    </video>
+    <figcaption>Video các bước tạo tài khoản Autodesk.</figcaption>
+   </figure>
    <div class="tabs" role="tablist" id="gtabs" aria-label="Cách tạo">
     <button role="tab" id="gt0" aria-controls="gp0" aria-selected="true">Trên trình duyệt · khuyến nghị</button><button role="tab" id="gt1" aria-controls="gp1" aria-selected="false" tabindex="-1">Từ AutoCAD, Revit</button><button role="tab" id="gt2" aria-controls="gp2" aria-selected="false" tabindex="-1">Google, Microsoft, Apple</button>
    </div>
